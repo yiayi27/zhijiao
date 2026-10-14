@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.manager.InformationInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.InformationInfoVo">
+        <id column="id" property="id" />
+        <result column="cover_picture" property="coverPicture" />
+        <result column="cover_type" property="coverType" />
+        <result column="title" property="title" />
+        <result column="video" property="video" />
+        <result column="content" property="content" />
+        <result column="url" property="url" />
+        <result column="url_name" property="urlName" />
+        <result column="sort" property="sort" />
+        <result column="update_time" property="updateTime" />
+        <result column="message_count" property="messageCount" />
+        <collection property="informationInfoTopicList" ofType="com.medusa.gruul.solitaire.api.model.vo.manager.InformationInfoTopicVo" column="id"
+                    select="queryInfoTopic" />
+    </resultMap>
+
+    <resultMap id="InfoTopicResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.InformationInfoTopicVo">
+        <result column="info_id" property="infoId"/>
+        <result column="topic_id" property="topicId"/>
+        <result column="topic_name" property="topicName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, cover_picture, cover_type, title, update_time, sort,
+        (select count(*) from t_information_message where info_id = p.id and is_deleted = 0) as message_count
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, cover_picture, cover_type, title, video, content, url, url_name
+    </sql>
+
+
+    <sql id="Base_Info_topic_List">
+        c.info_id AS info_id, c.topic_id as topic_id, t.topic_name as topic_name
+    </sql>
+
+    <select id="queryList" resultMap="BaseResultMap"
+            parameterType="com.medusa.gruul.solitaire.api.model.param.manager.InformationInfoParam">
+        SELECT
+        <include refid="Base_Page_List" />
+        FROM
+        t_information_info p
+        <where>
+            p.is_deleted = 0
+            <if test="informationInfoParam.title != null and informationInfoParam.title != ''">
+                AND p.title LIKE CONCAT('%',#{informationInfoParam.title},'%')
+            </if>
+            <if test="informationInfoParam.urlName != null and informationInfoParam.urlName != ''">
+                AND p.url_name LIKE CONCAT('%',#{informationInfoParam.urlName},'%')
+            </if>
+        </where>
+        ORDER BY
+        p.sort asc, p.update_time desc
+    </select>
+
+
+    <select id="queryInfoById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_information_info p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{id}
+        </where>
+    </select>
+
+    <select id="queryInfoTopic" resultMap="InfoTopicResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Info_topic_List"/>
+        FROM
+        t_information_info_topic c left join t_information_topic t on c.topic_id = t.id
+        WHERE
+        c.is_deleted = 0
+        AND c.info_id = #{id}
+    </select>
+
+
+</mapper>

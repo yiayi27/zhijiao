@@ -1,0 +1,78 @@
+@import '../my-mixins/utils.scss';
+
+.spike {
+  &__activity {
+    &--form {
+      margin-bottom: 10px;
+
+      .form--item {
+        margin-right: 10px;
+      }
+    }
+
+    &--list {
+      .activity--item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .item--l {
+          & > div {
+            margin: 7px 0;
+          }
+          .status {
+            margin-left: 80px;
+            color: red;
+            font-weight: bold;
+          }
+
+          .statistics {
+            color: #7c7c7c;
+          }
+        }
+
+        .item--r {
+        }
+      }
+
+      .m__card {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &__setting {
+    .form--item {
+      width: 308px;
+    }
+    .form--button {
+      margin-left: 10px;
+
+      &.del {
+        border-color: red;
+        color: red;
+      }
+    }
+    .tips {
+      color: #ccc;
+    }
+
+    .setting--uploader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 308px;
+      height: 82px;
+      border: 1px dashed rgb(141, 141, 141);
+      background: rgb(231, 231, 231);
+      color: #999999;
+      border-radius: 5px;
+    }
+
+    .el-button {
+      border-style: dashed;
+    }
+  }
+}

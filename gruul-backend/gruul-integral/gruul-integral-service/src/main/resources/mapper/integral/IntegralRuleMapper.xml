@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralRule">
+        <id column="integral_rule_id" property="integralRuleId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="integral_shop_id" property="integralShopId"/>
+        <result column="integral_validity" property="integralValidity"/>
+        <result column="use_rule_introduce" property="useRuleIntroduce"/>
+        <result column="integral_rule_info" property="integralRuleInfo"/>
+        <result column="rule_type" property="ruleType"/>
+        <result column="is_open" property="open"/>
+    </resultMap>
+
+    <!--积分规则获取映射结果-->
+    <resultMap id="RuleBaseResultMap" type="com.medusa.gruul.integral.web.model.dto.manager.IntegralRuleDto">
+        <id column="integral_rule_id" property="integralRuleId"/>
+        <result column="integral_shop_id" property="integralShopId"/>
+        <result column="integral_validity" property="integralValidity"/>
+        <result column="use_rule_introduce" property="useRuleIntroduce"/>
+        <result column="integral_rule_info" property="integralRuleInfo"/>
+        <result column="rule_type" property="ruleType"/>
+        <result column="is_open" property="open"/>
+        <collection property="integralRuleParameterDtos"
+                    ofType="com.medusa.gruul.integral.web.model.dto.manager.IntegralRuleParameterDto"
+                    column="integral_rule_id"
+                    select="queryintegralRuleParameterDtos"></collection>
+    </resultMap>
+
+    <resultMap id="ApiRuleBaseResultMap" type="com.medusa.gruul.integral.web.model.dto.manager.ApiIntegralRuleDto">
+        <id column="integral_rule_id" property="integralRuleId"/>
+        <result column="rule_type" property="ruleType"/>
+        <result column="is_open" property="open"/>
+    </resultMap>
+
+
+    <!--积分规则参数获取映射结果-->
+    <resultMap id="RuleParameterBaseResultMap"
+               type="com.medusa.gruul.integral.web.model.dto.manager.IntegralRuleParameterDto">
+        <id column="id" property="id"/>
+        <result column="key" property="key"/>
+        <result column="value" property="value"/>
+        <result column="belong_type" property="belongType"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        shop_id,
+        integral_rule_id, integral_shop_id, integral_validity, use_rule_introduce, integral_rule_info, rule_type, is_open
+    </sql>
+
+    <!--积分规则参数基础信息-->
+    <sql id="RuleParameterBase_Column_List">
+        tirp.id,tirp.key,tirp.value,tirp.belong_type
+    </sql>
+
+    <!--积分规则基础信息-->
+    <sql id="ApiRuleBase_Column_List">
+        integral_rule_id ,is_open,rule_type
+
+    </sql>
+
+    <sql id="RuleBase_Column_List">
+        tir.integral_rule_id, tir.integral_shop_id,tir.integral_validity,tir.use_rule_introduce,tir.integral_rule_info,tir.rule_type,tir.is_open
+    </sql>
+
+    <insert id="insertRule" parameterType="com.medusa.gruul.integral.api.entity.IntegralRule" useGeneratedKeys="true"
+            keyProperty="integralRuleId">
+         INSERT INTO `t_integral_rule`
+            ( `integral_shop_id`,`integral_validity`,`use_rule_introduce`,`integral_rule_info`,`rule_type`,`is_open`,`is_deleted`,`update_time`,`create_time`)
+        VALUES
+          (
+              #{integralRule.integralShopId},
+              #{integralRule.integralValidity},
+              #{integralRule.useRuleIntroduce},
+              #{integralRule.integralRuleInfo},
+              #{integralRule.ruleType},
+              #{integralRule.open},
+              #{integralRule.deleted},
+              #{integralRule.updateTime},
+              #{integralRule.createTime}
+            )
+
+    </insert>
+
+    <select id="queryintegralRuleParameterDtos" resultMap="RuleParameterBaseResultMap">
+        SELECT
+        <include refid="RuleParameterBase_Column_List"/>
+        FROM
+        t_integral_rule_parameter AS tirp
+        WHERE
+        tirp.is_deleted = 0
+        AND
+        tirp.integral_rule_id = #{id}
+    </select>
+
+
+    <select id="getShopRuleInfo" resultMap="RuleBaseResultMap"
+            parameterType="com.medusa.gruul.integral.web.model.dto.manager.IntegralRuleDto">
+        SELECT
+        <include refid="RuleBase_Column_List"/>
+        FROM
+        t_integral_rule tir
+        WHERE
+        tir.integral_shop_id = #{integralShopId}
+    </select>
+
+
+    <select id="selectIntegralRuleInfo" resultMap="BaseResultMap"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralRule">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        integral_shop_id = #{integralShopId}
+        AND
+        rule_type = 0
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="getIntegralRule" resultType="java.lang.Long">
+        SELECT
+          integral_rule_id
+        FROM
+          t_integral_rule
+        WHERE
+          integral_shop_id = #{integralShopId}
+        AND
+          rule_type = #{status}
+        AND
+          is_deleted = 0
+    </select>
+
+    <select id="getRule" resultMap="ApiRuleBaseResultMap"
+            resultType="com.medusa.gruul.integral.web.model.dto.manager.ApiIntegralRuleDto">
+        SELECT
+        <include refid="ApiRuleBase_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        integral_shop_id = #{shopId}
+        AND
+        is_deleted = 0
+        AND
+        rule_type = #{status} OR rule_type = #{status1}
+    </select>
+
+
+    <select id="getRuleStatus" resultMap="BaseResultMap" resultType="com.medusa.gruul.integral.api.entity.IntegralRule">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        integral_shop_id = #{id}
+        AND
+        rule_type = #{status}
+        AND
+        is_deleted = 0
+    </select>
+
+
+    <select id="selectRules" resultType="com.medusa.gruul.integral.api.entity.IntegralRule">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        integral_shop_id = #{shoppingId}
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="getIntegralRuleTask" resultType="java.lang.Long">
+         SELECT
+          integral_rule_id
+        FROM
+          t_integral_rule
+        WHERE
+          integral_shop_id = #{id}
+        AND
+          rule_type = #{status}
+        AND
+          is_deleted = 0
+    </select>
+
+
+    <select id="getRules" resultType="com.medusa.gruul.integral.api.entity.IntegralRule">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        integral_shop_id = #{id}
+        AND
+        is_deleted = 0
+    </select>
+
+
+    <select id="selectRule" resultType="com.medusa.gruul.integral.api.entity.IntegralRule">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule
+        WHERE
+        rule_type =#{ruleType}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+
+</mapper>

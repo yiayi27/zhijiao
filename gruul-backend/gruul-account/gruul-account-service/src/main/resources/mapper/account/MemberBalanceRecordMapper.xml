@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MemberBalanceRecordMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MemberBalanceRecord">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="use_balance" property="useBalance"/>
+        <result column="remaining_balance" property="remainingBalance"/>
+        <result column="member_info_id" property="memberInfoId"/>
+        <result column="change_type" property="changeType"/>
+        <result column="detail_name" property="detailName"/>
+        <result column="order_id" property="orderId"/>
+        <result column="deal_type" property="dealType"/>
+        <result column="shop_user_id" property="shopUserId"/>
+        <result column="account_del" property="accountDel"/>
+    </resultMap>
+
+    <resultMap id="MemberBalanceResultMap" type="com.medusa.gruul.account.model.vo.MemberBalanceRecordVo">
+        <result column="id" property="id"/>
+        <result column="use_balance" property="useBalance"/>
+        <result column="remaining_balance" property="remainingBalance"/>
+        <result column="member_info_id" property="memberInfoId"/>
+        <result column="change_type" property="changeType"/>
+        <result column="detail_name" property="detailName"/>
+        <result column="order_id" property="orderId"/>
+        <result column="deal_type" property="dealType"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_time,
+        shop_id,
+        is_deleted,
+        update_time,
+        id, use_balance, remaining_balance, member_info_id, change_type, detail_name, order_id, deal_type,shop_user_id
+    </sql>
+
+    <select id="getMemberBalanceRecord" resultMap="MemberBalanceResultMap">
+        select
+        tmbr.id, tmbr.use_balance, tmbr.remaining_balance, tmbr.member_info_id, tmbr.change_type, tmbr.detail_name,
+        tmbr.order_id,
+        tmbr.deal_type, tmbr.create_time
+        from
+        t_member_balance_record as tmbr
+        <where>
+            tmbr.is_deleted = 0
+            <if test="paramMap.startTime != null">
+                and tmbr.create_time >= #{paramMap.startTime}
+            </if>
+            <if test="paramMap.endTime != null">
+                and  <![CDATA[ tmbr.create_time <= #{paramMap.endTime}]]>
+            </if>
+            <if test="paramMap.memberInfoId != null">
+                and (tmbr.member_info_id in (${paramMap.memberInfoId}) or tmbr.shop_user_id in (${paramMap.memberInfoId}))
+            </if>
+            <if test="paramMap.dealType != null">
+                and tmbr.deal_type = #{paramMap.dealType}
+            </if>
+            <!--    小程序端用户查看仅查看用户未删除的     -->
+            <if test="paramMap.accountDel != null">
+                and tmbr.account_del = 0
+            </if>
+        </where>
+        order by tmbr.create_time desc
+    </select>
+</mapper>

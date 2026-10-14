@@ -1,0 +1,67 @@
+@import '../my-mixins/utils.scss';
+
+.evaluation {
+  &__switch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  &__table {
+    &--reply {
+      width: 100%;
+      background-color: rgb(243, 243, 243);
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    &--imgs {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 5px;
+      flex-wrap: wrap;
+
+      img {
+        $s: 50px;
+        width: $s;
+        height: $s;
+        display: block;
+        margin-right: 3px;
+      }
+    }
+  }
+
+  :deep(.text--center) {
+    text-align: center;
+  }
+
+  :deep(.btn-container) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .tw {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    // vertical-align: middle;
+  }
+
+  .name {
+    width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .user--avatar {
+    width: 60px;
+    border: 3px;
+    margin-right: 5px;
+  }
+}

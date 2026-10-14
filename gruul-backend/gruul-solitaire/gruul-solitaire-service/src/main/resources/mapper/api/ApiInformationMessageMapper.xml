@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.api.ApiInformationMessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ApiInfoMessageResultMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiInformationMessageVo">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="nick_name" property="nickName" />
+        <result column="avatar_url" property="avatarUrl" />
+        <result column="info_id" property="infoId" />
+        <result column="user_content" property="userContent" />
+        <result column="user_send_time" property="userSendTime" />
+        <result column="admin_send_time" property="adminSendTime" />
+        <result column="admin_content" property="adminContent" />
+        <result column="message_type" property="messageType" />
+        <result column="update_time" property="updateTime" />
+        <result column="info_message_like_count" property="infoMessageLikeCount" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Message_List">
+        c.id as id, c.info_id AS info_id, c.user_id as user_id, c.nick_name as nick_name, c.avatar_url as avatar_url, c.user_content as user_content,
+        c.user_send_time as user_send_time, c.admin_send_time as admin_send_time, c.admin_content as admin_content, c.message_type as message_type,
+        c.update_time as update_time,(select count(*) from t_information_message_like where message_id = c.id and is_deleted = 0) as info_message_like_count
+    </sql>
+
+    <select id="queryMessageList" resultMap="ApiInfoMessageResultMap" parameterType="com.medusa.gruul.solitaire.api.model.param.api.ApiInformationMessageParam">
+        SELECT
+        <include refid="Base_Message_List"/>
+        FROM
+        t_information_message c
+        WHERE
+        c.is_deleted = 0
+        AND c.info_id = #{apiInformationMessageParam.infoId}
+        ORDER BY
+        c.sort asc, c.user_send_time desc
+    </select>
+
+    <select id="queryMessage" resultMap="ApiInfoMessageResultMap" parameterType="com.medusa.gruul.solitaire.api.model.param.api.ApiInformationMessageParam">
+        SELECT
+        <include refid="Base_Message_List"/>
+        FROM
+        t_information_message c
+        WHERE
+        c.is_deleted = 0
+        AND c.info_id = #{apiInformationMessageParam.infoId}
+        AND c.user_id = #{apiInformationMessageParam.userId}
+    </select>
+
+</mapper>

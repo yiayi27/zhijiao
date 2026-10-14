@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralRuleParameterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="integral_rule_id" property="integralRuleId"/>
+        <result column="key" property="key"/>
+        <result column="value" property="value"/>
+        <result column="belong_type" property="belongType"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        tirp.is_deleted,
+        tirp.create_time,
+        tirp.update_time,
+        tirp.id, tirp.integral_rule_id, tirp.key, tirp.value, tirp.belong_type
+    </sql>
+
+
+    <insert id="insertInfo">
+        INSERT INTO `t_integral_rule_parameter`
+            (`integral_rule_id`, `key`, `value`, `belong_type`,`is_deleted`,`update_time`,`create_time`)
+        VALUES
+            (
+              #{integralRuleParameter.integralRuleId},
+              #{integralRuleParameter.key},
+              #{integralRuleParameter.value},
+              #{integralRuleParameter.belongType},
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            )
+    </insert>
+
+    <insert id="insertEnterInfo">
+
+        INSERT INTO `t_integral_rule_parameter`
+            (`integral_rule_id`, `key`, `value`,`belong_type`, `is_deleted`,`update_time`,`create_time`)
+        VALUES
+            (
+              #{integralRuleParameter.integralRuleId},
+              'day_login',
+              '20.00',
+              '1',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+             (
+              #{integralRuleParameter.integralRuleId},
+              'days',
+              '2.00',
+              '1',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+            (
+              #{integralRuleParameter.integralRuleId},
+              'days_login',
+              '30.00',
+              '1',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+             (
+              #{integralRuleParameter.integralRuleId},
+              'dayss',
+              '7.00',
+              '1',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+            (
+              #{integralRuleParameter.integralRuleId},
+              'dayss_login',
+              '50.00',
+              '1',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            )
+    </insert>
+
+    <insert id="insertSingInInfo">
+         INSERT INTO `t_integral_rule_parameter`
+            (`integral_rule_id`, `key`, `value`, `belong_type`,`is_deleted`,`update_time`,`create_time`)
+        VALUES
+            (
+              #{integralRuleParameter.integralRuleId},
+              'day_sign_in',
+              '40.00',
+              '2',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+             (
+              #{integralRuleParameter.integralRuleId},
+              'days',
+              '5.00',
+              '2',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+            (
+              #{integralRuleParameter.integralRuleId},
+              'days_sign_in',
+              '60.00',
+              '2',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+             (
+              #{integralRuleParameter.integralRuleId},
+              'dayss',
+              '7.00',
+              '2',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+            (
+              #{integralRuleParameter.integralRuleId},
+              'dayss_sign_in',
+              '20.00',
+              '2',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            )
+
+    </insert>
+    <insert id="insertStepNumberInfo">
+        INSERT INTO `t_integral_rule_parameter`
+            (`integral_rule_id`, `key`, `value`, `belong_type`,`is_deleted`,`update_time`,`create_time`)
+        VALUES
+            (
+              #{integralRuleParameter.integralRuleId},
+              'day_step_number',
+              '5000.00',
+              '3',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            ),
+             (
+              #{integralRuleParameter.integralRuleId},
+              'stop_number_integral',
+              '100.00',
+              '3',
+              #{integralRuleParameter.deleted},
+              #{integralRuleParameter.updateTime},
+              #{integralRuleParameter.createTime}
+            )
+
+    </insert>
+
+
+    <delete id="physicsDelete">
+      DELETE FROM
+        t_integral_rule_parameter
+      WHERE
+        integral_rule_id = #{integralRuleId}
+      AND
+        is_deleted = 0
+    </delete>
+
+
+    <select id="getShareIntegral" resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+    <select id="getSingInTotalDay" resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.shop_id = #{shopId}
+        AND
+        tirp.is_deleted = 0
+
+    </select>
+
+    <select id="getRuleParameterMapper"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.`key` = #{dayss}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+
+    <select id="getIntegralList" resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+
+    <select id="getSingInIntegral" resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.`key` = #{status}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+    <select id="getStepConversionIntegral"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.`key` = #{status}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+    <select id="getRuleParameterTask" resultType="com.medusa.gruul.integral.api.entity.IntegralRuleParameter">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_rule_parameter tirp
+        WHERE
+        tirp.integral_rule_id = #{integralRuleId}
+        AND
+        tirp.`key` = #{dayss}
+        AND
+        tirp.is_deleted = 0
+    </select>
+
+
+</mapper>

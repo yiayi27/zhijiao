@@ -1,0 +1,18 @@
+@import '../my-mixins/utils.scss';
+
+.distribut {
+  &__head {
+    &--search {
+      width: 246px;
+      float: right;
+    }
+  }
+}
+
+.linetabel {
+  margin-top: 17px;
+
+  :deep(thead tr th) {
+    background-color: #f6f8fa;
+  }
+}

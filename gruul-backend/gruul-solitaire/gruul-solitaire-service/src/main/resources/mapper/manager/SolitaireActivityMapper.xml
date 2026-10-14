@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.manager.SolitaireActivityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseActivityResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.SolitaireActivityVo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="preheat_hour" property="preheatHour" />
+        <result column="product_type" property="productType" />
+        <result column="cover_poster" property="coverPoster" />
+        <result column="content" property="content" />
+        <result column="status" property="status" />
+        <collection property="activityProducts" ofType="com.medusa.gruul.solitaire.api.model.vo.manager.SolitaireActivityProductVo" column="id"
+                    select="queryActivityProduct" />
+    </resultMap>
+
+    <resultMap id="ActivityProductResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.SolitaireActivityProductVo">
+        <id column="c_id" property="id"/>
+        <result column="c_product_id" property="productId"/>
+    </resultMap>
+
+    <!-- 查询单表映射结果 -->
+    <resultMap id="singleActivityResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.SolitaireActivityVo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="preheat_hour" property="preheatHour" />
+        <result column="product_type" property="productType" />
+        <result column="cover_poster" property="coverPoster" />
+        <result column="content" property="content" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, name, start_time, end_time, preheat_hour, status
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, name, start_time, end_time, preheat_hour, product_type, cover_poster, content, status
+    </sql>
+
+
+    <sql id="Base_Activity_Product_List">
+        c.id AS c_id, c.product_id as c_product_id
+    </sql>
+
+    <select id="queryActivityList" resultMap="BaseActivityResultMap"
+            parameterType="com.medusa.gruul.solitaire.api.model.param.manager.SolitaireActivityParam">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.is_deleted = 0
+            <if test="solitaireActivityParam.status != null">
+                AND p.status = #{solitaireActivityParam.status}
+            </if>
+            <if test="solitaireActivityParam.name != null and solitaireActivityParam.name != ''">
+                AND p.name LIKE CONCAT('%',#{solitaireActivityParam.name},'%')
+            </if>
+            <if test="solitaireActivityParam.startTime != null and solitaireActivityParam.startTime != ''">
+                AND DATE_FORMAT(p.start_time,'%Y-%m-%d') <![CDATA[>=]]> #{solitaireActivityParam.startTime}
+            </if>
+            <if test="solitaireActivityParam.endTime!=null and solitaireActivityParam.endTime != ''">
+                AND DATE_FORMAT(p.end_time,'%Y-%m-%d') <![CDATA[<=]]> #{solitaireActivityParam.endTime}
+            </if>
+        </where>
+        ORDER BY
+        p.start_time desc
+    </select>
+
+
+    <select id="queryActivityById" resultMap="BaseActivityResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{id}
+        </where>
+    </select>
+
+    <select id="queryActivityProduct" resultMap="ActivityProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Activity_Product_List"/>
+        FROM
+        t_solitaire_activity_product c
+        WHERE
+        c.is_deleted = 0
+        AND c.activity_id = #{id}
+    </select>
+
+    <select id="queryValidActivity" parameterType="java.lang.Long" resultMap="singleActivityResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.is_deleted = 0
+            AND p.status <![CDATA[ <> ]]> 2
+            <if test="id != 0 ">
+                AND p.id <![CDATA[ <> ]]> #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryActivityListForTask" resultMap="singleActivityResultMap" >
+        SELECT
+        id, name, start_time, end_time, product_type, status
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.is_deleted = 0
+            AND p.status <![CDATA[ <> ]]> 2
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <update id="updateActivityForTask" parameterType="com.medusa.gruul.solitaire.api.model.vo.manager.SolitaireActivityVo">
+        update
+        t_solitaire_activity p
+        set p.status = #{status}
+        <where>
+            p.id = #{id}
+        </where>
+    </update>
+
+</mapper>

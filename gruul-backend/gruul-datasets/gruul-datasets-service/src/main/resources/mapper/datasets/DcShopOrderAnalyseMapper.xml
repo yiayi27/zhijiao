@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.datasets.mapper.DcShopOrderAnalyseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.datasets.api.entity.DcShopOrderAnalyse">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="wait_pay_count" property="waitPayCount"/>
+        <result column="wait_pay_amount" property="waitPayAmount"/>
+        <result column="wait_deliver_count" property="waitDeliverCount"/>
+        <result column="wait_deliver_amount" property="waitDeliverAmount"/>
+        <result column="wait_sign_count" property="waitSignCount"/>
+        <result column="wait_sign_amount" property="waitSignAmount"/>
+        <result column="wait_take_count" property="waitTakeCount"/>
+        <result column="wait_take_amount" property="waitTakeAmount"/>
+        <result column="yyyyMMdd" property="yyyyMMdd"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, shop_id, wait_pay_count, wait_pay_amount, wait_deliver_count, wait_deliver_amount, wait_sign_count, wait_sign_amount, wait_take_count, wait_take_amount, yyyyMMdd
+    </sql>
+
+</mapper>

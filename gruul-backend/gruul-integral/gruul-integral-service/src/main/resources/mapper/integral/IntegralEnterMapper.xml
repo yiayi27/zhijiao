@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralEnterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="running_days" property="runningDays"/>
+        <result column="logIn_state" property="logInState"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_time,
+        shop_id,
+        update_time,
+        is_deleted,
+        id,shop_id,user_id,running_days,logIn_state
+    </sql>
+    <update id="updateEnterDays" parameterType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+        UPDATE
+        t_integral_logIn til
+        SET
+        til.running_days = #{integralLogIn.runningDays}
+        <where>
+            til.id = #{integralLogIn.id}
+        </where>
+    </update>
+
+    <update id="updateEnterStatus" parameterType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+        UPDATE
+        t_integral_logIn til
+        SET
+        til.logIn_state = #{integralLogIn.logInState}
+        <where>
+            til.id = #{integralLogIn.id}
+        </where>
+    </update>
+
+
+    <select id="selectByUserId" resultType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_logIn
+        WHERE
+        user_id = #{userId}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+
+    <select id="getDidnotEnter" resultType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_logIn
+        WHERE
+        logIn_state = false
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="getAllInfo" resultType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_logIn
+        WHERE
+        is_deleted = 0
+
+    </select>
+
+    <select id="selectShopUserInfo" resultType="com.medusa.gruul.integral.api.entity.IntegralLogIn">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_logIn
+        WHERE
+        shop_id =#{shopId}
+        AND
+        is_deleted = 0
+
+    </select>
+
+</mapper>

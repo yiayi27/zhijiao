@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralShopMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralShop">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="type" property="type"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="ratio" property="ratio"/>
+        <result column="ceiling" property="ceiling"/>
+    </resultMap>
+
+    <resultMap id="ShopBaseResultMap" type="com.medusa.gruul.integral.web.model.vo.IntegralShopVo">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="ratio" property="ratio"/>
+        <result column="ceiling" property="ceiling"/>
+        <result column="shop_id" property="shopId"/>
+    </resultMap>
+
+
+    <resultMap id="DiscountBaseResultMap" type="com.medusa.gruul.integral.web.model.vo.IntegralShopVo">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="ratio" property="ratio"/>
+        <result column="ceiling" property="ceiling"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        shop_id,
+        create_time,
+        update_time,
+        id, type, ratio, ceiling
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Shop_Base_Column_List">
+        shop_id,
+        id, type, ratio, ceiling
+    </sql>
+
+
+
+    <update id="updateShopStatus">
+        UPDATE
+          t_integral_shop t
+        SET
+          t.type  = #{status}
+        WHERE
+          t.shop_id = #{shopId}
+        and
+          t.is_deleted = 0
+    </update>
+
+
+    <update id="updateCreateTime">
+         UPDATE
+           t_integral_shop
+         SET
+          create_time = #{currentTime}
+         WHERE
+          shop_id =#{shopId}
+    </update>
+
+
+    <select id="getShopInfo" resultMap="ShopBaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Shop_Base_Column_List"/>
+        FROM
+        t_integral_shop
+        WHERE
+        shop_id = #{shopId}
+        AND
+        is_deleted = 0
+    </select>
+
+
+    <select id="selectByShopInfo" resultMap="BaseResultMap"
+            parameterType="com.medusa.gruul.integral.api.entity.IntegralShop">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_shop
+        WHERE
+        shop_id = #{shopId}
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="selectByShopId" resultType="java.lang.Long">
+        SELECT
+          id
+        FROM
+          t_integral_shop
+        WHERE
+          shop_id = #{shopId}
+        AND
+          is_deleted = 0
+    </select>
+
+
+    <select id="getDiscountInfo" resultType="com.medusa.gruul.integral.api.model.DiscountInfoDto">
+      SELECT
+        ratio,ceiling
+      FROM
+        t_integral_shop
+      WHERE
+         shop_id = #{shopId}
+      AND
+          is_deleted = 0
+    </select>
+
+    <select id="selectAllShopInfo" resultType="com.medusa.gruul.integral.api.entity.IntegralShop">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_shop
+        WHERE
+        is_deleted = 0
+    </select>
+
+
+</mapper>

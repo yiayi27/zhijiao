@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.manager.CouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.CouponVo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="name" property="name" />
+        <result column="effective_type" property="effectiveType" />
+        <result column="effective_days" property="effectiveDays" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="product_type" property="productType" />
+        <result column="coupon_type" property="couponType" />
+        <result column="discount" property="discount" />
+        <result column="discount_amount" property="discountAmount" />
+        <result column="condition_amount" property="conditionAmount" />
+        <result column="issue_quantity" property="issueQuantity" />
+        <result column="limit_quantity" property="limitQuantity" />
+        <result column="status" property="status" />
+        <result column="give_type" property="giveType" />
+        <result column="integral" property="integral" />
+        <result column="has_get" property="hasGet" />
+        <result column="has_use" property="hasUse" />
+        <collection property="couponProducts" ofType="com.medusa.gruul.discount.api.model.vo.manager.CouponProductVo" column="id"
+                    select="queryCouponProduct" />
+    </resultMap>
+
+    <resultMap id="CouponProductResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.CouponProductVo">
+        <id column="c_id" property="id"/>
+        <result column="c_product_id" property="productId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, create_time, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, status, integral
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, recycle_activity,recycle_img,status, give_type, integral
+    </sql>
+
+
+    <sql id="Base_Coupon_Product_List">
+        c.id AS c_id, c.product_id as c_product_id
+    </sql>
+
+    <select id="queryCouponList" resultMap="BaseResultMap"
+            parameterType="com.medusa.gruul.discount.api.model.param.manager.CouponParam">
+        SELECT
+        id, create_time, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, status, integral,
+        COALESCE(s.total_used, 0) AS has_get,
+        COALESCE(u.used_count, 0) AS has_use
+        FROM
+        t_coupon p
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS total_used
+        FROM t_member_coupon
+        WHERE is_deleted = 0
+        GROUP BY coupon_id
+        ) s ON s.coupon_id = p.id
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS used_count
+        FROM t_member_coupon
+        WHERE use_status = 1 AND is_deleted = 0
+        GROUP BY coupon_id
+        ) u ON u.coupon_id = p.id
+        <where>
+            p.is_deleted = 0
+            <if test="couponParam.name != null and couponParam.name != ''">
+                AND p.name LIKE CONCAT('%',#{couponParam.name},'%')
+            </if>
+            <if test="couponParam.status != null">
+                AND p.status = #{couponParam.status}
+            </if>
+            <if test="couponParam.couponType != null">
+                AND p.coupon_type = #{couponParam.couponType}
+            </if>
+            <if test="couponParam.giveType != null">
+                AND p.give_type = #{couponParam.giveType}
+            </if>
+            <if test="couponParam.startTime != null and couponParam.startTime != ''">
+                AND DATE_FORMAT(p.start_time,'%Y-%m-%d') <![CDATA[>=]]> #{couponParam.startTime}
+            </if>
+            <if test="couponParam.endTime!=null and couponParam.endTime != ''">
+                AND DATE_FORMAT(p.end_time,'%Y-%m-%d') <![CDATA[<=]]> #{couponParam.endTime}
+            </if>
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <select id="queryIntegralCouponList" resultMap="BaseResultMap"
+            parameterType="com.medusa.gruul.discount.api.model.param.manager.CouponParam">
+        SELECT
+        id, create_time, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, status, integral,
+        COALESCE(s.total_used, 0) AS has_get,
+        COALESCE(u.used_count, 0) AS has_use
+        FROM
+        t_coupon p
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS total_used
+        FROM t_member_coupon
+        WHERE is_deleted = 0
+        GROUP BY coupon_id
+        ) s ON s.coupon_id = p.id
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS used_count
+        FROM t_member_coupon
+        WHERE use_status = 1 AND is_deleted = 0
+        GROUP BY coupon_id
+        ) u ON u.coupon_id = p.id
+        <where>
+            p.is_deleted = 0
+            <if test="couponParam.giveType != null">
+                AND p.give_type = #{couponParam.giveType}
+            </if>
+            <if test="couponParam.name != null and couponParam.name != ''">
+                AND p.name LIKE CONCAT('%',#{couponParam.name},'%')
+            </if>
+            <choose>
+                <when test="couponParam.status == 1">
+                    AND p.status <![CDATA[<>]]> 2
+                </when>
+                <when test="couponParam.status == 2">
+                    AND p.status = #{couponParam.status}
+                </when>
+            </choose>
+        </where>
+        ORDER BY
+        p.create_time desc
+    </select>
+
+    <select id="queryCouponById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_coupon p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{id}
+        </where>
+    </select>
+
+    <select id="queryCouponProduct" resultMap="CouponProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Coupon_Product_List"/>
+        FROM
+        t_coupon_product c
+        WHERE
+        c.is_deleted = 0
+        AND c.coupon_id = #{id}
+    </select>
+
+    <select id="queryCouponListForTask" resultMap="BaseResultMap" >
+        SELECT
+        id, create_time, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, status
+        FROM
+        t_coupon p
+        <where>
+            p.is_deleted = 0
+            AND p.effective_type = 0
+            AND p.status <![CDATA[ <> ]]> 2
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <update id="updateCouponForTask" parameterType="com.medusa.gruul.discount.api.model.vo.manager.CouponVo">
+        update
+        t_coupon p
+        set p.status = #{status}
+        <where>
+            p.id = #{id}
+        </where>
+    </update>
+</mapper>

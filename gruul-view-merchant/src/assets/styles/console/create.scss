@@ -1,0 +1,87 @@
+.create {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+
+  &__avatar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &--image {
+      width: 60px;
+      height: 60px;
+      //border-radius: 100%;
+      border-radius: 8px;
+      margin-right: 20px;
+      border: 1px solid var(--el-border-color);
+      padding: 2px;
+
+      i {
+        font-size: 60px;
+      }
+    }
+  }
+
+  &__ShopName {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &--input {
+      width: 350px;
+      margin-right: 15px;
+    }
+  }
+
+  &__type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__footer {
+    text-align: center;
+    margin-top: 100px;
+  }
+}
+
+.type__item {
+  position: relative;
+  width: 270px;
+  height: 189px;
+  background: url('https://medusa-small-file.oss-cn-hangzhou.aliyuncs.com/gruul/20200228/shops.png');
+  background-size: cover;
+  cursor: pointer;
+
+  .title {
+    position: absolute;
+    left: 30px;
+    top: 40px;
+    font-size: 18px;
+    font-weight: bolder;
+    color: #ffffff;
+  }
+
+  .info {
+    position: absolute;
+    left: 30px;
+    top: 65px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.53);
+  }
+
+  .description {
+    position: absolute;
+    left: 38px;
+    top: 130px;
+    font-size: 14px;
+    color: #4c4c4c;
+  }
+}
+
+.type__item--active {
+  background: url('https://medusa-small-file.oss-cn-hangzhou.aliyuncs.com/gruul/20200228/shop-active.png');
+  background-size: cover;
+}

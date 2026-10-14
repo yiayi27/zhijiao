@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MiniAccountMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MiniAccount">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="country" property="country"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="language" property="language"/>
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <result column="first_login_time" property="firstLoginTime"/>
+        <result column="whether_authorization" property="whetherAuthorization"/>
+        <result column="first_user_id" property="firstUserId"/>
+        <result column="second_user_id" property="secondUserId"/>
+    </resultMap>
+
+    <resultMap id="UserListResultMap" type="com.medusa.gruul.account.model.dto.UserListDto">
+        <result column="member_number" property="memberNumber"/>
+        <result column="supply_bonus" property="supplyBonus"/>
+        <result column="rebate_bonus" property="rebateBonus"/>
+        <result column="user_id" property="userId"/>
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="phone" property="phone"/>
+        <result column="member_register_time" property="memberRegisterTime"/>
+        <result column="last_deal_time" property="orderLastDealTime"/>
+        <result column="first_login_time" property="firstLoginTime"/>
+        <result column="consume_num" property="consumeNum"/>
+        <result column="consume_totle_money" property="consumeTotleMoney"/>
+        <result column="integral" property="integral"/>
+        <result column="shop_user_id" property="shopUserId"/>
+        <result column="order_count" property="orderCount"/>
+        <result column="first_nick_name" property="firstNickName"/>
+        <result column="first_phone" property="firstPhone"/>
+        <result column="first_distribution_amount" property="firstDistributionAmount"/>
+    </resultMap>
+
+    <resultMap id="UserDistributionIndexResultMap" type="com.medusa.gruul.account.model.vo.UserDistributionVo">
+        <result column="total_distribution_amount" property="totalDistributionAmount"/>
+        <result column="distribution_user_count" property="distributionUserCount"/>
+    </resultMap>
+
+    <resultMap id="UserDistributionListResultMap" type="com.medusa.gruul.account.model.vo.UserDistributionDetailVo">
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="create_time" property="createTime"/>
+        <result column="single_user_amount" property="singleUserAmount"/>
+        <result column="user_order_count" property="userOrderCount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        shop_id,
+        create_time,
+        is_deleted,
+        update_time,
+        user_id,
+        country,
+        province,
+        city,
+        `language`,
+        nike_name,
+        avatar_url,
+        phone,
+        email,
+        gender,
+        first_login_time,
+        whether_authorization,
+        first_user_id,
+        second_user_id
+    </sql>
+
+    <select id="selectByUserList" resultMap="UserListResultMap">
+        select
+        DISTINCT
+        tma.id,
+        tma.user_id,
+        tma.avatar_url,
+        tma.phone,
+        tma.nike_name,
+        tma.first_login_time,
+        tmae.last_deal_time,
+        tmae.integral,
+        tmae.consume_num,
+        tmae.consume_totle_money,
+        tmae.community_type,
+        tmae.shop_user_id,
+        tmae.supply_bonus,
+        tmae.rebate_bonus,
+        member.member_register_time,
+        a.nike_name as first_nick_name,
+        a.phone as first_phone,
+        (select count(*) from t_member_balance_record r where r.shop_user_id = (select shop_user_id from t_mini_account_extends s where s.user_id = tma.user_id) and r.deal_type = 4  and r.is_deleted = 0 and r.shop_id = #{paramMap.shopId}) as order_count,
+        (select ifnull(sum(r.use_balance),0) from t_member_balance_record r where r.shop_user_id = (select shop_user_id from t_mini_account_extends s where s.user_id = tma.user_id) and r.deal_type = 4  and r.is_deleted = 0 and r.shop_id = #{paramMap.shopId}) as first_distribution_amount
+        from t_mini_account AS tma
+        left join
+        (select s.shop_user_id, acc.nike_name, acc.phone from t_mini_account_extends s left join t_mini_account acc on s.user_id = acc.user_id where s.is_deleted = 0 and acc.is_deleted = 0)
+        as a on a.shop_user_id = tma.first_user_id
+        left join t_mini_account_extends AS tmae on tmae.user_id = tma.user_id
+        LEFT JOIN (SELECT
+        ttmi.user_id,
+        ANY_VALUE ( ttmi.member_register_time ) AS member_register_time,
+        ANY_VALUE ( ttmi.member_number ) AS member_number,
+        ANY_VALUE ( ttmi.member_card_info_id ) AS member_card_info_id,
+        ANY_VALUE ( tmci.rank_code ) AS rank_code
+        FROM
+        t_member_info ttmi
+        left join t_member_card_info as tmci on tmci.id = ttmi.member_card_info_id
+        WHERE
+            ttmi.state = 1
+            AND ttmi.is_deleted = 0
+            AND ttmi.member_expire_time > sysdate()
+        GROUP BY
+        user_id
+        ) AS member ON member.user_id = tmae.shop_user_id
+
+        <where>
+            tmae.is_blacklist = 0
+            and tmae.shop_id = #{paramMap.shopId}
+            and tma.whether_authorization = 1
+            <if test="paramMap.tagId != null">
+                and tmae.shop_user_id in (SELECT user_id
+                FROM t_mini_account_tag_group
+                where tag_id = #{paramMap.tagId}
+                and is_deleted = 0)
+            </if>
+            <if test="paramMap.nikeName != null">
+                and tma.nike_name like #{paramMap.nikeName}
+            </if>
+            <if test="paramMap.orderSuccessStartTime != null">
+                and tmae.last_deal_time >= #{paramMap.orderSuccessStartTime}
+            </if>
+            <if test="paramMap.orderSuccessEndTime != null">
+                and  <![CDATA[ tmae.last_deal_time <= #{paramMap.orderSuccessEndTime}
+                ]]>
+            </if>
+            <!-- 会员卡相关搜索-->
+            <if test="paramMap.becomeMemberStartTime != null">
+                and member.member_register_time >= #{paramMap.becomeMemberStartTime}
+            </if>
+            <if test="paramMap.becomeMemberEndTime != null">
+                <![CDATA[and   member.member_register_time <= #{paramMap.becomeMemberEndTime}
+                        ]]>
+            </if>
+            <if test="paramMap.memberNumber != null">
+                and member.member_number like concat('%', #{paramMap.memberNumber}, '%')
+            </if>
+            <if test="paramMap.rankCode != null">
+                and member.rank_code = #{paramMap.rankCode}
+            </if>
+        </where>
+        <if test="paramMap.sortType != null">
+            order by
+            <if test="paramMap.sortType == 1">
+                tmae.consume_totle_money desc,tma.id
+            </if>
+            <if test="paramMap.sortType == 2">
+                tmae.consume_totle_money asc
+            </if>
+            <if test="paramMap.sortType == 3">
+                member.member_register_time desc
+            </if>
+            <if test="paramMap.sortType == 4">
+                member.member_register_time asc
+            </if>
+        </if>
+        <if test="paramMap.sortType == null">
+            order by tmae.shop_user_id desc
+        </if>
+    </select>
+
+   <!-- 會員信息查詢 -->
+
+    <resultMap id="memberListMap" type="com.medusa.gruul.account.model.dto.UserListDto">
+        <result column="phone" property="phone"/>
+        <result column="userId" property="userId"/>
+        <result column="avatarUrl" property="avatarUrl"/>
+        <result column="firstLoginTime" property="firstLoginTime"/>
+        <result column="firstUserId" property="firstUserId"/>
+        <result column="lastDealTime" property="orderLastDealTime"/>
+        <result column="integral" property="integral"/>
+        <result column="consumeNum" property="consumeNum"/>
+        <result column="consumeTotleMoney" property="consumeTotleMoney"/>
+        <result column="shopUserId" property="shopUserId"/>
+        <result column="supplyBonus" property="supplyBonus"/>
+        <result column="rebateBonus" property="rebateBonus"/>
+        <result column="memberRegisterTime" property="memberRegisterTime"/>
+        <result column="phone" property="phone"/>
+        <result column="phone" property="phone"/>
+        <result column="phone" property="phone"/>
+        <result column="phone" property="phone"/>
+        <association property="orderCount" select="selectOrderCount" column="{shopUserId=shopUserId,shopId=shopId}"/>
+        <association property="firstDistributionAmount" select="selectFirstDistributionAmount" column="{shopUserId=shopUserId,shopId=shopId}"/>
+    </resultMap>
+    <select id="selectOrderCount" resultType="java.lang.Integer">
+        SELECT
+            count(record.id)
+        FROM
+            t_member_balance_record record
+        WHERE
+            record.shop_user_id = #{shopUserId}
+          AND record.deal_type = 4
+          AND record.is_deleted = 0
+          AND record.shop_id = #{shopId}
+    </select>
+    <select id="selectFirstDistributionAmount" resultType="java.math.BigDecimal">
+        SELECT
+            IFNULL( sum( record.use_balance ), 0 )
+        FROM
+            t_member_balance_record AS record
+        WHERE
+            record.shop_user_id = #{shopUserId}
+          AND record.deal_type = 4
+          AND record.is_deleted = 0
+          AND record.shop_id = #{shopId}
+    </select>
+    <select id="selectMemberInfo" resultMap="memberListMap">
+        SELECT
+            extends.shop_id AS shopId,
+            extends.mobile AS phone,
+            extends.first_user_id AS firstUserId,
+            extends.user_id AS userId,
+            extends.avatar AS avatarUrl,
+            extends.nickname AS nikeName,
+            extends.first_login_time AS firstLoginTime,
+            extends.last_deal_time AS lastDealTime,
+            extends.integral AS integral,
+            extends.consume_num AS consumeNum,
+            extends.consume_totle_money AS consumeTotleMoney,
+            extends.community_type AS communityType,
+            extends.shop_user_id AS shopUserId,
+            extends.supply_bonus AS supplyBonus,
+            extends.rebate_bonus AS rebateBonus,
+            memberInfo.member_register_time as memberRegisterTime
+        FROM
+            t_mini_account_extends AS extends
+        LEFT JOIN t_member_info AS memberInfo ON extends.user_id = memberInfo.user_id
+            AND memberInfo.is_deleted = 0
+            AND memberInfo.state = 1
+            AND memberInfo.member_expire_time > SYSDATE()
+        WHERE
+            extends.is_blacklist = 0
+        AND extends.shop_id = #{param.shopId}
+        <if test="param.tagId != null">
+            AND EXISTS ( SELECT tagGroup.id FROM t_mini_account_tag_group AS tagGroup WHERE tagGroup.user_id = shop.shop_user_id AND tagGroup.tag_id = #{param.tagId} AND tagGroup.is_deleted = 0 )
+        </if>
+        <if test="param.nikeName != null and param.nikeName!= ''">
+          AND LOCATE( #{param.nikeName}, extends.nickname ) > 0
+        </if>
+        <if test="param.orderSuccessStartTime != null">
+            AND extends.last_deal_time >= #{param.orderSuccessStartTime}
+        </if>
+        <if test="param.orderSuccessEndTime != null">
+            AND  <![CDATA[ extends.last_deal_time <= #{param.orderSuccessEndTime} ]]>
+        </if>
+        <if test="param.becomeMemberStartTime != null">
+            AND memberInfo.member_register_time >= #{param.becomeMemberStartTime}
+        </if>
+        <if test="param.becomeMemberEndTime != null">
+             AND <![CDATA[ memberInfo.member_register_time <= #{param.becomeMemberEndTime} ]]>
+        </if>
+        <if test="param.memberNumber != null and param.memberNumber != ''">
+            AND LOCATE(#{param.memberNumber},memberInfo.member_number)
+        </if>
+        <if test="param.rankCode != null and param.rankCode != ''">
+            AND EXISTS( SELECT * FROM t_member_card_info AS memberCardInfo WHERE memberCardInfo.id = memberInfo.member_card_info_id AND memberCardInfo.rank_code = #{param.rankCode} AND memberCardInfo.is_deleted=0)
+        </if>
+
+        <if test="param.sortType != null">
+            <if test="param.sortType == 1">
+                ORDER BY extends.consume_totle_money DESC
+            </if>
+            <if test="param.sortType == 2">
+                ORDER BY extends.consume_totle_money ASC
+            </if>
+            <if test="param.sortType == 3">
+                ORDER BY memberInfo.member_register_time DESC
+            </if>
+            <if test="param.sortType == 4">
+                ORDER BY memberInfo.member_register_time ASC
+            </if>
+        </if>
+        <if test="param.sortType == null">
+            ORDER BY extends.shop_user_id DESC
+        </if>
+    </select>
+    <!-- ========= -->
+
+    <select id="selectByBlackListUser" resultType="com.medusa.gruul.account.model.dto.BlacklistUserDto">
+        SELECT
+            extends.user_id AS user_id,
+            extends.avatar AS avatar_url,
+            extends.mobile AS phone,
+            extends.nickname AS nike_name,
+            extends.first_login_time AS first_login_time,
+            extends.last_deal_time AS last_deal_time,
+            extends.integral AS integral,
+            extends.consume_num AS consume_num,
+            extends.consume_totle_money AS consume_totle_money,
+            extends.user_id AS shop_user_id,
+            ( extends.supply_bonus + extends.rebate_bonus ) AS supply_bonus
+        FROM
+            t_mini_account_extends AS extends
+        WHERE
+            extends.is_deleted = 0
+        AND extends.is_blacklist = 1
+        AND extends.shop_id = #{paramMap.shopId}
+        <if test="paramMap.permission != null">
+            AND EXISTS ( SELECT rest.id FROM t_mini_account_restrict AS rest WHERE rest.user_id = extends.user_id AND rest.restrict_type = #{paramMap.permission} AND rest.is_deleted = 0)
+        </if>
+        <if test="paramMap.fuzzy != null and paramMap.fuzzy != ''">
+            AND (
+                LOCATE(#{paramMap.fuzzy},dat.nickname) > 0
+            OR
+                LOCATE(#{paramMap.fuzzy},extends.mobile) > 0
+            )
+        </if>
+        ORDER BY
+            extends.join_blacklist_time DESC
+    </select>
+
+
+    <resultMap id="MiniAccountExtDtoResultMap" type="com.medusa.gruul.account.api.model.MiniAccountExtDto">
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="shop_user_id" property="shopUserId"/>
+    </resultMap>
+
+
+    <select id="selectByShopUserIds" resultMap="MiniAccountExtDtoResultMap">
+        select tmae.avatar AS avatar_url,
+        tmae.nickname AS nike_name,
+        tmae.shop_user_id
+        from t_mini_account_extends as tmae
+        where tmae.user_id
+        <foreach collection="shopUserIds" item="shopUserId" open="in(" separator="," close=")">
+            #{shopUserId}
+        </foreach>
+    </select>
+
+
+    <select id="getMemberInfo" resultMap="BaseResultMap">
+        SELECT
+          extends.mobile AS phone,
+          extends.user_id AS id,
+          extends.nickname AS nike_name,
+          extends.user_id AS user_id,
+          extends.avatar AS avatar_url,
+          extends.first_login_time AS first_login_time,
+          1 AS whether_authorization
+        FROM
+            t_mini_account_extends AS extends
+        WHERE extends.is_deleted = 0
+        <if test="userId != null and userId != ''">
+            AND extends.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="getIntegralByShopUserId" resultType="java.math.BigDecimal">
+        select integral
+        from t_mini_account_extends t
+        where t.is_deleted = 0
+        <if test="shopId != null and shopId != ''">
+            AND t.shop_id = #{shopId}
+        </if>
+        <if test="shopUserId != null and shopUserId != ''">
+            AND t.shop_user_id = #{shopUserId}
+        </if>
+    </select>
+
+    <update id="updateBonus">
+        update t_mini_account_extends t
+        set t.supply_bonus = #{amount}
+        where t.is_deleted = 0
+          and t.shop_user_id = #{userId}
+    </update>
+
+    <update id="updateRebateBonus">
+        update t_mini_account_extends t
+        set t.rebate_bonus = #{amount}
+        where t.is_deleted = 0
+          and t.shop_user_id = #{userId}
+    </update>
+    <update id="updateMulitClientAccountById">
+        update
+        t_mini_account_extends
+            <set>
+                <if test="miniAccount.updateTime != null">
+                    update_time = #{miniAccount.updateTime},
+                </if>
+                <if test="miniAccount.phone != null and miniAccount.phone !=''">
+                    mobile = #{miniAccount.phone},
+                </if>
+                <if test="miniAccount.firstUserId != null and miniAccount.firstUserId != ''">
+                    first_user_id = #{miniAccount.firstUserId}
+                </if>
+            </set>
+          where
+                id = #{miniAccount.id}
+    </update>
+
+    <select id="selectByShopUserId" resultMap="BaseResultMap">
+        SELECT
+            extends.id as id,
+            extends.shop_id as shop_id,
+            extends.create_time as create_time,
+            extends.mobile as phone,
+            extends.first_user_id,
+            extends.user_id as user_id,
+            extends.nickname as nike_name,
+            extends.avatar as avatar_url,
+            extends.first_login_time as first_login_time,
+            1 as whether_authorization
+        FROM
+            t_mini_account_extends AS extends
+        WHERE
+            extends.user_id = #{shopUserId}
+    </select>
+
+    <select id="selectUserDistributionIndex" resultMap="UserDistributionIndexResultMap">
+        select
+        (select count(*) from t_mini_account_extends t where  t.first_user_id = #{shopUserId} and t.is_deleted = 0 and t.shop_id = #{shopId}) as distribution_user_count,
+        (select ifnull(sum(r.use_balance),0) from t_member_balance_record r where r.shop_user_id = #{shopUserId} and r.deal_type = 4 and r.is_deleted = 0 and r.shop_id = #{shopId}) as total_distribution_amount
+        from dual
+    </select>
+
+    <select id="selectUserDistributionList" resultMap="UserDistributionListResultMap"
+            parameterType="com.medusa.gruul.account.model.param.ApiUserDistributionParam">
+        select
+            t.nickname nike_name,
+            t.avatar avatar_url,
+            t.create_time,
+            (
+                select ifnull(sum(r.pay_amount),0)
+                from t_member_balance_record r
+                where r.shop_user_id = #{apiUserDistributionParam.shopUserId}
+                  and r.distribution_type = 1
+                  and r.deal_type = 4
+                  and r.is_deleted = 0
+                  and r.shop_id = #{apiUserDistributionParam.shopId}
+            ) as single_user_amount,
+            (
+                select count(*)
+                from t_member_balance_record r
+                where r.shop_user_id = #{apiUserDistributionParam.shopUserId}
+                  and r.distribution_type = 1
+                  and r.deal_type = 4
+                  and r.is_deleted = 0
+                  and r.shop_id = #{apiUserDistributionParam.shopId}
+            ) as user_order_count
+        from t_mini_account_extends t
+        where t.is_deleted = 0 AND t.first_user_id = #{apiUserDistributionParam.shopUserId}
+
+    </select>
+    <select id="selectFirstNickNameByFirstUserId"
+            resultType="com.medusa.gruul.account.model.vo.FirstDistributionVo">
+        select
+            t1.nickname firstNickName,
+            t1.mobile firstPhone
+        from t_mini_account_extends t1
+        where t1.user_id = #{firstUserId}
+    </select>
+
+
+</mapper>

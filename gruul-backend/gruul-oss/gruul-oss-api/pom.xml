@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>com.medusa</groupId>
+        <artifactId>gruul-oss</artifactId>
+        <version>1.0</version>
+    </parent>
+
+	<artifactId>gruul-oss-api</artifactId>
+	<packaging>jar</packaging>
+
+	<description>oss api模块</description>
+
+
+	<dependencies>
+		<!--mybatis plus extension,包含了mybatis plus core-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-extension</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-openfeign-core</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations-jakarta</artifactId>
+			<version>2.2.25</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.medusa</groupId>
+			<artifactId>gruul-common-global-model</artifactId>
+		</dependency>
+	</dependencies>
+
+
+</project>

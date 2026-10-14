@@ -1,0 +1,178 @@
+.live-loading {
+  width: 100%;
+  height: 50px;
+}
+
+.live-tip {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #b0b0b0;
+  font-size: 12px;
+  &-loadMore {
+    background-color: #ffffff;
+    color: #333333;
+  }
+}
+
+.live-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 0px;
+}
+
+.liveListScroll {
+  overflow-x: auto !important;
+  flex-wrap: nowrap !important;
+}
+
+.liveList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 0px;
+}
+
+.liveListItem {
+  width: 49%;
+  height: 190px;
+  margin-bottom: 7px;
+  position: relative;
+  > img {
+    width: 100%;
+    height: 100%;
+    background-color: #666;
+    object-fit: cover;
+  }
+}
+
+.liveItemBig {
+  width: 100% !important;
+  height: 190px;
+  margin-bottom: 7px;
+  position: relative;
+  > img {
+    width: 100%;
+    height: 100%;
+    background-color: #666;
+    object-fit: cover;
+  }
+}
+
+.liveItemScroll {
+  flex-shrink: 0;
+  margin-right: 10px !important;
+}
+
+.live-item-head {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  img {
+    width: 90rpx;
+    height: 30rpx;
+    vertical-align: middle;
+  }
+}
+
+.live-item-bottom {
+  position: absolute;
+  bottom: 20px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  line-height: 20px;
+  font-size: 12px;
+  width: 100%;
+  height: 20px;
+  color: #fff;
+  img {
+    width: 15x;
+    height: 15px;
+    vertical-align: middle;
+  }
+}
+
+.live-like {
+  position: relative;
+}
+
+.like-gif {
+  width: 200px !important;
+  height: 100px !important;
+  position: absolute;
+  bottom: 15px;
+  right: -50px;
+}
+
+.head-text {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 15px;
+  font-size: 11px;
+  padding: 0 6px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.live-item-center {
+  color: #fff;
+  font-size: 12px;
+  bottom: 45px;
+  left: 8px;
+  position: absolute;
+}
+
+.head-live {
+  // background-img: url(http://medusa-small-file.oss-cn-hangzhou.aliyuncs.com/Live/dong.png);
+  overflow: hidden;
+  background-position: center;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  font-size: 11px;
+  line-height: 15px;
+  color: #fff;
+  padding: 0 6px;
+  img {
+    width: 12px;
+    height: 11px;
+    vertical-align: middle;
+    border-radius: 10px;
+  }
+}
+
+.head-no-live {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  font-size: 11px;
+  line-height: 15px;
+  color: #fff;
+  padding: 0 6px;
+  padding-left: 12px;
+  background-color: rgba(0, 226, 100, 1);
+  &::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
+    display: block;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    margin-top: -2px;
+    background-color: #fff;
+  }
+}
+
+.head-done-live {
+  background-color: #666;
+}
+
+.no-live-data {
+  text-align: center;
+  line-height: 400rpx;
+  width: 100%;
+}

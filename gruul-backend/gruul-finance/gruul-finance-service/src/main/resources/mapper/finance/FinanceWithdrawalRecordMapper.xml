@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.finance.mapper.FinanceWithdrawalRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.finance.api.entity.FinanceWithdrawalRecord">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_avatar_url" property="userAvatarUrl"/>
+        <result column="account_type" property="accountType"/>
+        <result column="amount" property="amount"/>
+        <result column="channel" property="channel"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="open_id" property="openId"/>
+        <result column="account" property="account"/>
+        <result column="bank_name" property="bankName"/>
+        <result column="trade_no" property="tradeNo"/>
+        <result column="arrive_time" property="arriveTime"/>
+        <result column="audit_status" property="auditStatus"/>
+        <result column="note" property="note"/>
+        <result column="reason" property="reason"/>
+        <result column="commission" property="commission"/>
+        <result column="sn" property="sn"/>
+        <result column="ext_name" property="extName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_time,
+        update_time,
+        is_deleted,
+        id, shop_id, user_id, user_name, user_avatar_url, account_type, amount, channel, name,phone, open_id, account,
+        bank_name, trade_no,arrive_time, audit_status, note, commission, sn, ext_name
+    </sql>
+    <select id="getWithdrawalRecordPage"
+            resultType="com.medusa.gruul.finance.api.entity.FinanceWithdrawalRecord">
+        SELECT
+            *
+        FROM
+            t_finance_withdrawal_record
+        WHERE
+            account_type = #{dto.accountType}
+            AND user_id = #{dto.userId}
+            <if test='dto.type == 1'>
+                AND audit_status = 2
+            </if>
+        ORDER BY create_time DESC
+    </select>
+    <select id="searchWithdrawalRecordPage"
+            resultType="com.medusa.gruul.finance.api.entity.FinanceWithdrawalRecord">
+        SELECT
+        *
+        FROM
+        t_finance_withdrawal_record
+        WHERE
+        is_deleted = 0
+        AND create_time BETWEEN #{dto.startTime} AND #{dto.endTime}
+        <if test='dto.id != null '>
+            AND id = #{dto.id}
+        </if>
+        <if test='dto.accountType != null '>
+            AND account_type = #{dto.accountType}
+        </if>
+        <if test="dto.name != null and dto.name!='' ">
+            AND name LIKE concat('%',#{dto.name},'%')
+        </if>
+        <if test="dto.userId != null and dto.userId!='' ">
+            AND user_id = #{dto.userId}
+        </if>
+        <if test="dto.auditStatus != null ">
+            AND audit_status = #{dto.auditStatus}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+    <select id="searchWithdrawalRecordPageByAreaAss" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        t_finance_withdrawal_record
+        WHERE
+        is_deleted = 0
+        AND create_time BETWEEN #{dto.startTime} AND #{dto.endTime}
+        AND account_type = 1
+        <if test='dto.userId != null '>
+            AND user_id = #{dto.userId}
+        </if>
+        <if test="dto.auditStatus == 1 ">
+            AND (audit_status = 0 or audit_status = 1)
+        </if>
+        <if test="dto.auditStatus != 1 ">
+            AND audit_status = #{dto.auditStatus}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

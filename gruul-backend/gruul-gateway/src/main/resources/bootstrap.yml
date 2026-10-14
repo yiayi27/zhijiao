@@ -1,0 +1,17 @@
+server:
+  port: 9999
+spring:
+  profiles:
+    active: dev
+  application:
+    name: gateway
+  config:
+    import:
+      - nacos:${spring.application.name}.yml?refreshEnabled=true
+  cloud:
+    nacos:
+      server-addr: 101.71.86.28:8884
+      discovery:
+        namespace: ${spring.profiles.active}
+      config:
+        namespace: ${spring.profiles.active}

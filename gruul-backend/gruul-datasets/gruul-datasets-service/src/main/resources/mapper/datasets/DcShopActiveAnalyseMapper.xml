@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.datasets.mapper.DcShopActiveAnalyseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.datasets.api.entity.DcShopActiveAnalyse">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="pv" property="pv"/>
+        <result column="uv" property="uv"/>
+        <result column="yyyyMMdd" property="yyyyMMdd"/>
+        <result column="yyyyMM" property="yyyyMM"/>
+        <result column="wx_man" property="wxMan"/>
+        <result column="wx_woman" property="wxWoman"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, shop_id, pv, uv, yyyyMMdd, yyyyMM, wx_man, wx_woman
+    </sql>
+    <!--访客数据通用查询结果列-->
+    <sql id="Caller_Base_Column_List">
+
+
+    </sql>
+
+    <select id="getCallerInfoByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_dc_shop_active_analyse tdaa
+        WHERE
+        tadd.user_id = #{userId}
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="getCallerInfoByToday" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_dc_shop_active_analyse tdaa
+        WHERE
+        is_deleted = 0
+        AND
+        to_days(tdaa.create_time) = to_days(now())
+    </select>
+
+
+    <select id="getCallerInfoByShopId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_dc_shop_active_analyse tdaa
+        WHERE
+        is_deleted = 0
+        AND
+        to_days(tdaa.create_time) = to_days(now())
+        AND
+        tdaa.shop_id =#{shopId}
+    </select>
+
+
+    <select id="getCallerInfoByYesterday" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_dc_shop_active_analyse tdaa
+        WHERE
+        is_deleted = 0
+        AND
+        DATEDIFF(tdaa.create_time,NOW())=-1
+    </select>
+
+
+    <select id="getCallerInfoByTime" resultType="java.lang.Integer">
+        SELECT
+         SUM (pv)
+        FROM
+        t_dc_shop_active_analyse tdaa
+        WHERE
+        is_deleted = 0
+        AND
+          <![CDATA[ tdaa.yyyyMMdd <= #{endTime}]]>
+        AND
+          <![CDATA[tdaa.yyyyMMdd >= #{startTime}
+
+        ]]>
+    </select>
+
+    <select id="getAllCallerInfoByShopId" resultType="java.lang.Integer">
+        SELECT
+          SUM(uv)
+        FROM
+           t_dc_shop_active_analyse
+        WHERE
+           is_deleted = 0
+    </select>
+
+    <select id="getAllPageViewInfoByShopId" resultType="java.lang.Integer">
+         SELECT
+          SUM(pv)
+        FROM
+           t_dc_shop_active_analyse
+        WHERE
+           is_deleted = 0
+
+    </select>
+
+</mapper>

@@ -1,0 +1,43 @@
+@import '../my-mixins/utils.scss';
+
+.putarea {
+  &__row {
+    &--item {
+      display: inline-block;
+      width: 25%;
+    }
+
+    &--popover {
+      font-size: 12px;
+      margin-bottom: 10px;
+
+      &:nth-last-of-type(1) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__diatf {
+    text-align: right;
+    height: 50px;
+    line-height: 80px;
+    border-top: 1px solid #ebeef5;
+    margin-top: 30px;
+  }
+
+  &__checkAll {
+    margin: 20px 0;
+  }
+
+  &__checkbox {
+    margin-right: 4px;
+  }
+
+  &__newarea {
+    margin-bottom: 20px;
+
+    &--chechbox {
+      margin-left: 4px;
+    }
+  }
+}

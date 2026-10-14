@@ -1,0 +1,118 @@
+@import '../my-mixins/utils.scss';
+
+.detail {
+  width: 100%;
+
+  .tc {
+    text-align: center;
+  }
+
+  &__status {
+    width: 100%;
+    background-color: rgba(233, 243, 251, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(45, 140, 240, 1);
+    box-shadow: none;
+    color: #586884;
+    padding: 20px;
+  }
+
+  &__price {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    b {
+      font-size: 20px;
+      color: #2d8cf0;
+      position: relative;
+      top: -1px;
+    }
+  }
+
+  &__field {
+    font-size: 13px;
+  }
+
+  &__table {
+  }
+
+  :deep(.el-col) {
+    margin-top: 15px;
+  }
+
+  :deep(.m__table) {
+    .table__goods {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      .table__goods--image {
+        $s: 70px;
+        width: $s;
+        height: $s;
+        background: #ccc;
+        margin-right: 10px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .table--info {
+        width: 184px;
+        height: auto;
+        line-height: 16px;
+
+        .goods--name {
+        }
+
+        .goods--specification {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .l {
+            color: #999999;
+          }
+        }
+
+        .goods--price {
+          color: #fd6205;
+          margin-top: 5px;
+        }
+      }
+    }
+
+    .table__user {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      .user--head {
+        $s: 35px;
+        width: $s;
+        height: $s;
+        border-radius: 50%;
+        background: blue;
+        margin-right: 10px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .table__button {
+      cursor: pointer;
+
+      &.button--warning {
+        color: #fa8b03;
+      }
+    }
+  }
+}

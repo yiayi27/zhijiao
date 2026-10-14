@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.manager.FullScaleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.FullScaleVo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="deduction_type" property="deductionType" />
+        <result column="apply_type" property="applyType" />
+        <result column="product_type" property="productType" />
+        <result column="status" property="status" />
+        <collection property="fullScaleProducts" ofType="com.medusa.gruul.discount.api.model.vo.manager.FullScaleProductVo" column="id"
+                    select="queryFullScaleProduct" />
+        <collection property="fullScaleRules" ofType="com.medusa.gruul.discount.api.model.vo.manager.FullScaleRuleVo" column="id"
+                    select="queryFullScaleRule" />
+    </resultMap>
+
+    <resultMap id="FullScaleRuleResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.FullScaleRuleVo">
+        <id column="r_id" property="id"/>
+        <id column="r_full_scale_id" property="fullScaleId"/>
+        <result column="r_rule_type" property="ruleType"/>
+        <result column="r_discount" property="discount"/>
+        <result column="r_discount_amount" property="discountAmount"/>
+        <result column="r_condition_amount" property="conditionAmount"/>
+    </resultMap>
+
+    <resultMap id="FullScaleProductResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.FullScaleProductVo">
+        <id column="c_id" property="id"/>
+        <id column="c_product_id" property="productId"/>
+        <id column="c_full_scale_id" property="fullScaleId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, name, start_time, end_time, deduction_type, apply_type, product_type, status
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, start_time, end_time, deduction_type, apply_type, product_type, status
+    </sql>
+
+    <sql id="Base_Full_Scale_Rule_List">
+        r.id AS r_id, r.full_scale_id as r_full_scale_id, r.rule_type as r_rule_type, r.discount as r_discount, r.discount_amount as r_discount_amount, r.condition_amount as r_condition_amount
+    </sql>
+
+    <sql id="Base_Full_Scale_Product_List">
+        c.id AS c_id, c.product_id as c_product_id, c.full_scale_id as c_full_scale_id
+    </sql>
+
+    <select id="queryFullScaleList" resultMap="BaseResultMap"
+            parameterType="com.medusa.gruul.discount.api.model.param.manager.FullScaleParam">
+        SELECT
+        <include refid="Base_Page_List" />
+        FROM
+        t_full_scale p
+        <where>
+            p.is_deleted = 0
+            <if test="fullScaleParam.name != null and fullScaleParam.name != ''">
+                AND p.name LIKE CONCAT('%',#{fullScaleParam.name},'%')
+            </if>
+            <if test="fullScaleParam.status != null">
+                AND p.status = #{fullScaleParam.status}
+            </if>
+
+            <if test="fullScaleParam.startTime != null and fullScaleParam.startTime != ''">
+                AND DATE_FORMAT(p.start_time,'%Y-%m-%d') <![CDATA[>=]]> #{fullScaleParam.startTime}
+            </if>
+            <if test="fullScaleParam.endTime!=null and fullScaleParam.endTime != ''">
+                AND DATE_FORMAT(p.end_time,'%Y-%m-%d') <![CDATA[<=]]> #{fullScaleParam.endTime}
+            </if>
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <select id="queryFullScaleById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_full_scale p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{id}
+        </where>
+    </select>
+
+    <select id="queryFullScaleRule" resultMap="FullScaleRuleResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Full_Scale_Rule_List"/>
+        FROM
+        t_full_scale_rule r
+        WHERE
+        r.is_deleted = 0
+        AND
+        r.full_scale_id = #{id}
+    </select>
+
+    <select id="queryFullScaleProduct" resultMap="FullScaleProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Full_Scale_Product_List"/>
+        FROM
+        t_full_scale_product c
+        WHERE
+        c.is_deleted = 0
+        AND
+        c.full_scale_id = #{id}
+    </select>
+
+    <select id="queryGoingFullScaleList" resultMap="BaseResultMap" >
+        SELECT
+        id, name, deduction_type, apply_type, product_type
+        FROM
+        t_full_scale p
+        <where>
+            p.is_deleted = 0
+            AND p.status = 1
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <select id="queryFullScaleListForTask" resultMap="BaseResultMap" >
+        SELECT
+        id, name, start_time, end_time, deduction_type, apply_type, product_type, status
+        FROM
+        t_full_scale p
+        <where>
+            p.is_deleted = 0
+            AND p.status <![CDATA[ <> ]]> 2
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <update id="updateFullScaleForTask" parameterType="com.medusa.gruul.discount.api.model.vo.manager.FullScaleVo">
+        update
+        t_full_scale p
+        set p.status = #{status}
+        <where>
+            p.id = #{id}
+        </where>
+    </update>
+
+</mapper>

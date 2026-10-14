@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.finance.mapper.FinanceAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.finance.api.entity.FinanceAccount">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="type" property="type"/>
+        <result column="source_id" property="sourceId"/>
+        <result column="brokerage_total" property="brokerageTotal"/>
+        <result column="brokerage" property="brokerage"/>
+        <result column="brokerage_frozen" property="brokerageFrozen"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_time,
+        update_time,
+        is_deleted,
+        id, shop_id, user_id, type, source_id, brokerage_total, brokerage, brokerage_frozen
+    </sql>
+    <select id="getByAccount" resultType="com.medusa.gruul.finance.api.entity.FinanceAccount">
+        select * from t_finance_account where type = #{type} and  source_id = #{id} limit 1
+    </select>
+
+</mapper>

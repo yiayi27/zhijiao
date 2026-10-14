@@ -1,0 +1,26 @@
+@import './var.scss';
+
+page {
+  background: #f1f2f6;
+}
+
+view {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/*按钮*/
+button {
+  line-height: inherit;
+  border-radius: inherit;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  opacity: 1;
+  background-color: inherit;
+  &::after {
+    border: 0;
+  }
+}

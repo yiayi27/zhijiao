@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.goods.mapper.manager.RebateSetMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.goods.api.model.vo.manager.RebateSetVo">
+        <id column="id" property="id"/>
+        <result column="rebate_ratio" property="rebateRatio"/>
+        <result column="balance_use_condition" property="balanceUseCondition"/>
+        <result column="rebate_condition" property="rebateCondition"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, rebate_ratio, balance_use_condition, rebate_condition
+    </sql>
+
+    <select id="queryDefaultRebateSet" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_rebate_set
+        WHERE
+        is_deleted = 0
+        limit 1
+    </select>
+
+</mapper>

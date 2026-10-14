@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralOrder">
+        <id column="prize_order_id" property="prizeOrderId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="prize_id" property="prizeId"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="prize_order_status" property="prizeOrderStatus"/>
+        <result column="user_id" property="userId"/>
+        <result column="member_avatar_url" property="memberAvatarUrl"/>
+        <result column="pay_type" property="payType"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="wxuser_name" property="wxuserName"/>
+        <result column="pay_fee" property="payFee"/>
+        <result column="order_type" property="orderType"/>
+        <result column="price" property="price"/>
+        <result column="integral_goods_pic" property="integralGoodsPic"/>
+        <result column="expend_integral" property="expendIntegral"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="address" property="address"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="receive_time" property="receiveTime"/>
+        <result column="tel_phone" property="telPhone"/>
+        <result column="delivery_sn" property="deliverySn"/>
+        <result column="delivery_company" property="deliveryCompany"/>
+        <result column="shipping_fee" property="shippingFee"/>
+        <result column="distri_mode" property="distriMode"/>
+        <result column="delivery_staff" property="deliveryStaff"/>
+        <result column="integral_good_name" property="integralGoodName"/>
+        <result column="back_remark" property="backRemark"/>
+        <result column="buyers_note" property="buyersNote"/>
+    </resultMap>
+
+
+    <!--积分商品订单基础信息-->
+    <resultMap id="BaseResultGoodsOrderMap" type="com.medusa.gruul.integral.web.model.vo.IntegralGoodsOrderVo">
+        <id column="prize_order_id" property="prizeOrderId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="prize_id" property="prizeId"/>
+        <result column="prize_order_status" property="prizeOrderStatus"/>
+        <result column="user_id" property="userId"/>
+        <result column="member_avatar_url" property="memberAvatarUrl"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="pay_type" property="payType"/>
+        <result column="wxuser_name" property="wxuserName"/>
+        <result column="price" property="price"/>
+        <result column="integral_goods_pic" property="integralGoodsPic"/>
+        <result column="expend_integral" property="expendIntegral"/>
+        <result column="distri_mode" property="distriMode"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="address" property="address"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="tel_phone" property="telPhone"/>
+        <result column="delivery_sn" property="deliverySn"/>
+        <result column="delivery_company" property="deliveryCompany"/>
+        <result column="delivery_template_id" property="deliveryTemplateId"/>
+        <result column="shipping_fee" property="shippingFee"/>
+        <result column="back_remark" property="backRemark"/>
+        <result column="buyers_note" property="buyersNote"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="receive_time" property="receiveTime"/>
+        <collection property="shoppingInfVos" ofType="com.medusa.gruul.integral.web.model.vo.ShoppingInfVo"
+                    column="prize_id" select="queryShoppingInf"></collection>
+    </resultMap>
+
+    <resultMap id="BaseResultIntegralOrderPrintMap" type="com.medusa.gruul.integral.api.model.IntegralOrderVo">
+        <result column="receiver_name" property="receiverName"/>
+        <result column="address" property="address"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="receive_time" property="receiveTime"/>
+        <result column="tel_phone" property="telPhone"/>
+        <result column="delivery_sn" property="deliverySn"/>
+        <result column="delivery_company" property="deliveryCompany"/>
+        <result column="integral_good_name" property="integralGoodName"/>
+        <result column="package_name" property="packageName"/>
+        <result column="package_code" property="packageCode"/>
+        <result column="sorting_code" property="sortingCode"/>
+        <result column="back_remark" property="backRemark"/>
+        <result column="buyers_note" property="buyersNote"/>
+        <result column="delivery_template_id" property="deliveryTemplateId"/>
+    </resultMap>
+
+    <!--积分优惠券订单基础信息-->
+    <resultMap id="BaseResultCouponOrderMap"
+               type="com.medusa.gruul.integral.web.model.dto.manager.IntegralCouponOrderDto">
+        <id column="prize_order_id" property="prizeOrderId"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="wxuser_name" property="wxuserName"/>
+        <result column="order_type" property="orderType"/>
+        <result column="price" property="price"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="delivery_staff" property="deliveryStaff"/>
+        <result column="back_remark" property="backRemark"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+
+    <resultMap id="BaseResultGoodsMap" type="com.medusa.gruul.integral.web.model.vo.ShoppingInfVo">
+        <id column="id" property="id"/>
+        <result column="integral_good_name" property="integralGoodName"/>
+        <result column="integral_price" property="integralPrice"/>
+        <result column="pic" property="pic"/>
+        <result column="product_sn" property="productSn"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        prize_order_id, prize_id, coupon_id, coupon_type,prize_order_status, menber_id, pay_type, pay_time, wxuser_name, pay_fee, order_type, price,integral_goods_pic, expend_integral, receiver_name, address, tel_phone, delivery_sn, delivery_company, shipping_fee, distri_mode, delivery_staff, integral_good_name, back_remark
+    </sql>
+    <!--积分订单所需商品信息-->
+    <sql id="Base_Goods_Column_List">
+        ig.id , ig.integral_good_name , ig.integral_price , ig.pic , ig.product_sn
+    </sql>
+    <!--积分订单基础信息-->
+    <sql id="Base_OrderGoods_Colembn_List">
+        igo.prize_order_id,igo.create_time,igo.prize_id,igo.prize_order_status,igo.user_id,igo.member_avatar_url,igo.pay_time,
+        igo.wxuser_name,igo.price ,igo.integral_goods_pic,igo.expend_integral ,igo.distri_mode ,igo.receiver_name,igo.province_code,
+        igo.city_code,igo.area_code,igo.address,igo.delivery_template_id,igo.delivery_sn,
+        igo.delivery_company , igo.shipping_fee , igo.integral_good_name ,igo.back_remark,igo.send_time ,igo.receive_time,
+        igo.tel_phone,igo.pay_type ,igo.buyers_note
+    </sql>
+
+    <!--积分优惠券基础信息-->
+    <sql id="Base_OrderCoupon_Colembn_List">
+       igo.prize_order_id,
+        igo.create_time,
+        igo.order_type,
+        igo.user_id,
+        igo.wxuser_name,
+        igo.price,
+		igo.coupon_type,
+        igo.back_remark,
+        igo.send_time,
+        igo.receiver_name
+    </sql>
+
+    <sql id="Base_Column_List_VO">
+        receiver_name,address,tel_phone,delivery_sn,delivery_company,
+        integral_good_name,delivery_template_id,send_time,receive_time,back_remark,
+        buyers_note,sorting_code,package_name,package_code
+
+    </sql>
+
+    <select id="getGoodsOrderList" resultMap="BaseResultGoodsOrderMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralGoodsOrderVo">
+        SELECT
+        <include refid="Base_OrderGoods_Colembn_List"/>
+        FROM
+        t_integral_order igo
+        WHERE
+        igo.is_deleted = 0
+        AND igo.order_type = #{integralGoodsOrderParam.orderType}
+        <if test="integralGoodsOrderParam.prizeOrderStatus == -1">
+            AND igo.prize_order_status in (0,1,2)
+        </if>
+        <if test="integralGoodsOrderParam.prizeOrderStatus != -1">
+            AND igo.prize_order_status = #{integralGoodsOrderParam.prizeOrderStatus}
+        </if>
+        <if test="integralGoodsOrderParam.wxuserName != null and integralGoodsOrderParam.wxuserName != '' ">
+            AND igo.wxuser_name LIKE CONCAT('%',#{integralGoodsOrderParam.wxuserName},'%')
+        </if>
+        <if test="integralGoodsOrderParam.prizeOrderId != null and integralGoodsOrderParam.prizeOrderId != '' ">
+            AND igo.prize_order_id LIKE CONCAT('%',#{integralGoodsOrderParam.prizeOrderId},'%')
+        </if>
+        <if test="integralGoodsOrderParam.integralGoodName != null and integralGoodsOrderParam.integralGoodName != '' ">
+            AND igo.integral_good_name LIKE CONCAT('%',#{integralGoodsOrderParam.integralGoodName},'%')
+        </if>
+        ORDER BY
+        igo.create_time
+        DESC
+    </select>
+
+
+    <select id="queryShoppingInf" resultMap="BaseResultGoodsMap">
+        SELECT
+        <include refid="Base_Goods_Column_List"/>
+        FROM
+        t_integral_goods ig
+        WHERE
+        ig.id = #{prizeId}
+    </select>
+
+
+    <select id="getGoodsOrderInfo" resultMap="BaseResultGoodsOrderMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralGoodsOrderVo">
+
+        SELECT
+        <include refid="Base_OrderGoods_Colembn_List"/>
+        FROM
+        t_integral_order igo
+        WHERE
+        igo.is_deleted = 0
+        AND igo.prize_order_id = #{orderId}
+        LIMIT 1
+    </select>
+
+
+    <select id="getIntegralCouponOrderList" resultMap="BaseResultCouponOrderMap"
+            resultType="com.medusa.gruul.integral.web.model.dto.manager.IntegralCouponOrderDto">
+        SELECT
+        <include refid="Base_OrderCoupon_Colembn_List"/>
+        FROM
+        t_integral_order igo
+        WHERE
+        igo.is_deleted = 0
+        AND
+        igo.order_type = #{integralCouponOrderParam.orderType}
+        <if test="integralCouponOrderParam.wxuserName != null and integralCouponOrderParam.wxuserName != '' ">
+            AND igo.wxuser_name LIKE CONCAT('%',#{integralCouponOrderParam.wxuserName},'%')
+        </if>
+        ORDER BY
+        igo.create_time
+        DESC
+    </select>
+
+
+    <select id="getFiltrateGoodsOrderList" resultMap="BaseResultGoodsOrderMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralGoodsOrderVo">
+        SELECT
+        <include refid="Base_OrderGoods_Colembn_List"/>
+        FROM
+        t_integral_order igo
+        WHERE
+        igo.is_deleted = 0
+        AND
+        FIND_IN_SET (igo.prize_order_id ,#{integralDeliveryFiltrateParam.integralOrders})
+        <if test="integralDeliveryFiltrateParam.wxuserName != null and integralDeliveryFiltrateParam.wxuserName != '' ">
+            AND igo.wxuser_name LIKE CONCAT('%',#{integralDeliveryFiltrateParam.wxuserName},'%')
+        </if>
+        <if test="integralDeliveryFiltrateParam.integralGoodName != null and integralDeliveryFiltrateParam.integralGoodName != '' ">
+            AND igo.integral_good_name LIKE CONCAT('%',#{integralDeliveryFiltrateParam.integralGoodName},'%')
+        </if>
+        <if test="integralDeliveryFiltrateParam.address != null and integralDeliveryFiltrateParam.address != '' ">
+            AND igo.address LIKE CONCAT('%',#{integralDeliveryFiltrateParam.address},'%')
+        </if>
+        <if test="integralDeliveryFiltrateParam.prizeOrderId != null and integralDeliveryFiltrateParam.prizeOrderId != '' ">
+            AND igo.prize_order_id LIKE CONCAT('%',#{integralDeliveryFiltrateParam.prizeOrderId},'%')
+        </if>
+        /*发货状态为未发货的*/
+        AND igo.prize_order_status = 0
+    </select>
+
+    <select id="selectIntegralOrderVoById" resultMap="BaseResultIntegralOrderPrintMap"
+            resultType="com.medusa.gruul.integral.api.model.IntegralOrderVo">
+        SELECT
+        <include refid="Base_Column_List_VO"/>
+        FROM t_integral_order
+        WHERE
+        is_deleted = 0 AND prize_order_id = #{integralOrderId}
+
+    </select>
+
+    <select id="selectAllWaitForSendIntegralOrder" resultMap="BaseResultGoodsOrderMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralGoodsOrderVo">
+
+        SELECT
+        <include refid="Base_OrderGoods_Colembn_List"/>
+        FROM
+        t_integral_order igo
+        WHERE
+        igo.is_deleted = 0
+        AND
+        igo.prize_order_status = 0
+        ORDER BY
+        igo.create_time
+        DESC
+    </select>
+
+</mapper>

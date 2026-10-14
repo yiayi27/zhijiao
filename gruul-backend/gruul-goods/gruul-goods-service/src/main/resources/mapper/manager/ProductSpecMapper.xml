@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.goods.mapper.manager.ProductSpecMapper">
+
+    <resultMap id="productSpecTreeMap" type="com.medusa.gruul.goods.api.model.vo.manager.ProductSpecVo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="order" column="order"/>
+            <result property="version" column="version"/>
+            <collection property="children" column="{productId=product_id,parentId=id}"
+                        javaType="java.util.ArrayList" select="queryProductSpecsByProductId"
+            />
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,shop_id,
+        product_id,name,parent_id,
+        create_time,update_time,is_deleted,
+        version
+    </sql>
+    <!-- 树结构子查询 -->
+    <select id="queryProductSpecsByProductId" resultMap="productSpecTreeMap">
+        SELECT
+            spec.id AS id,
+            spec.product_id AS product_id,
+            spec.name AS name,
+            spec.parent_id AS parent_id,
+            spec.create_time AS create_time,
+            spec.update_time AS update_time,
+            spec.order AS `order`,
+            spec.version AS version
+        FROM
+            t_product_spec AS spec
+        WHERE
+            spec.product_id = #{productId}
+        AND
+            spec.parent_id = #{parentId}
+        AND spec.is_deleted = 0
+        ORDER BY spec.order
+    </select>
+</mapper>

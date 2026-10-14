@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.api.ApiInformationInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseListMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiInformationInfoVo">
+        <id column="id" property="id" />
+        <result column="cover_picture" property="coverPicture" />
+        <result column="cover_type" property="coverType" />
+        <result column="title" property="title" />
+        <result column="video" property="video" />
+        <result column="content" property="content" />
+        <result column="url" property="url" />
+        <result column="url_name" property="urlName" />
+        <result column="sort" property="sort" />
+        <result column="update_time" property="updateTime" />
+        <result column="message_count" property="messageCount" />
+        <result column="info_like_count" property="infoLikeCount" />
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiInformationInfoVo">
+        <id column="id" property="id" />
+        <result column="cover_picture" property="coverPicture" />
+        <result column="cover_type" property="coverType" />
+        <result column="title" property="title" />
+        <result column="video" property="video" />
+        <result column="content" property="content" />
+        <result column="url" property="url" />
+        <result column="url_name" property="urlName" />
+        <result column="sort" property="sort" />
+        <result column="update_time" property="updateTime" />
+        <result column="info_like_count" property="infoLikeCount" />
+        <collection property="informationInfoTopicList" ofType="com.medusa.gruul.solitaire.api.model.vo.api.ApiInformationInfoTopicVo" column="id"
+                    select="queryInfoTopic" />
+    </resultMap>
+
+    <resultMap id="InfoTopicResultMap" type="com.medusa.gruul.solitaire.api.model.vo.manager.InformationInfoTopicVo">
+        <result column="info_id" property="infoId"/>
+        <result column="topic_id" property="topicId"/>
+        <result column="topic_name" property="topicName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, cover_picture, cover_type, title, update_time, sort, update_time,
+        (select count(*) from t_information_like where info_id = p.id and is_deleted = 0) as info_like_count
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, cover_picture, cover_type, title, video, content, url, url_name, update_time,
+        (select count(*) from t_information_like where info_id = p.id and is_deleted = 0) as info_like_count
+    </sql>
+
+    <sql id="Base_Info_topic_List">
+        c.info_id AS info_id, c.topic_id as topic_id, t.topic_name as topic_name
+    </sql>
+
+    <select id="queryList" resultMap="BaseListMap"
+            parameterType="com.medusa.gruul.solitaire.api.model.param.api.ApiInformationInfoParam">
+        SELECT
+        <include refid="Base_Page_List" />
+        FROM
+        t_information_info p
+        <where>
+            p.is_deleted = 0
+            <if test="apiInformationInfoParam.topicId != null">
+                AND p.id in (select info_id from t_information_info_topic t where t.topic_id = #{apiInformationInfoParam.topicId} and t.is_deleted = 0 )
+            </if>
+        </where>
+        ORDER BY
+        p.sort asc, p.update_time desc
+    </select>
+
+    <select id="queryInfoById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_information_info p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{id}
+        </where>
+    </select>
+
+    <select id="queryInfoTopic" resultMap="InfoTopicResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Info_topic_List"/>
+        FROM
+        t_information_info_topic c left join t_information_topic t on c.topic_id = t.id
+        WHERE
+        c.is_deleted = 0
+        AND c.info_id = #{id}
+    </select>
+
+</mapper>

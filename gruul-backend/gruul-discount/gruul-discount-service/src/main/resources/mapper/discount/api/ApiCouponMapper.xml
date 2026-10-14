@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.api.ApiCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.api.ApiCouponVo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="name" property="name" />
+        <result column="effective_type" property="effectiveType" />
+        <result column="effective_days" property="effectiveDays" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="product_type" property="productType" />
+        <result column="coupon_type" property="couponType" />
+        <result column="discount" property="discount" />
+        <result column="discount_amount" property="discountAmount" />
+        <result column="condition_amount" property="conditionAmount" />
+        <result column="limit_quantity" property="limitQuantity" />
+        <result column="integral" property="integral" />
+        <result column="available" property="available" />
+        <result column="total_available" property="totalAvailable" />
+        <collection property="couponProducts" ofType="com.medusa.gruul.discount.api.model.vo.api.ApiCouponProductVo" column="id"
+                    select="queryCouponProduct" />
+    </resultMap>
+
+    <resultMap id="CouponProductResultMap" type="com.medusa.gruul.discount.api.model.vo.api.ApiCouponProductVo">
+        <id column="c_id" property="id"/>
+        <result column="c_product_id" property="productId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        p.id, p.create_time, p.name, p.effective_type, p.effective_days, p.start_time, p.end_time, p.coupon_type, p.product_type, p.discount, p.discount_amount, p.condition_amount, p.issue_quantity, p.limit_quantity, p.status, p.integral
+    </sql>
+
+    <sql id="Base_Coupon_Product_List">
+        c.id AS c_id, c.product_id as c_product_id
+    </sql>
+
+
+    <select id="queryApiCouponList" resultMap="BaseResultMap">
+        SELECT
+        (p.issue_quantity - COALESCE(s.total_used, 0)) AS total_available,
+        (p.limit_quantity - COALESCE(u.user_used, 0)) AS available,
+        <include refid="Base_Page_List"/>
+        FROM t_coupon p
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS total_used
+        FROM t_member_coupon
+        WHERE is_deleted = 0
+        GROUP BY coupon_id
+        ) s ON s.coupon_id = p.id
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS user_used
+        FROM t_member_coupon
+        WHERE user_id = #{userId} AND is_deleted = 0
+        GROUP BY coupon_id
+        ) u ON u.coupon_id = p.id
+        <where>
+            p.is_deleted = 0
+            and p.status = 1
+            and p.give_type = 0
+            and p.recycle_activity = 0
+            and p.discount != 10
+        </where>
+        order by
+        p.coupon_type,
+        p.create_time desc
+    </select>
+
+    <select id="queryCouponProduct" resultMap="CouponProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Coupon_Product_List"/>
+        FROM
+        t_coupon_product c
+        WHERE
+        c.is_deleted = 0
+        AND c.coupon_id = #{id}
+    </select>
+
+    <select id="queryApiIntegralCouponList" resultMap="BaseResultMap">
+        SELECT
+        (p.issue_quantity - COALESCE(s.total_used, 0)) AS total_available,
+        (p.limit_quantity - COALESCE(u.user_used, 0)) AS available,
+        <include refid="Base_Page_List"/>
+        FROM t_coupon p
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS total_used
+        FROM t_member_coupon
+        WHERE is_deleted = 0
+        GROUP BY coupon_id
+        ) s ON s.coupon_id = p.id
+        LEFT JOIN (
+        SELECT coupon_id, COUNT(*) AS user_used
+        FROM t_member_coupon
+        WHERE user_id = #{userId} AND is_deleted = 0
+        GROUP BY coupon_id
+        ) u ON u.coupon_id = p.id
+        <where>
+            p.is_deleted = 0
+            and (p.status = 0 or p.status = 1)
+            and p.give_type = 2
+        </where>
+        order by
+        p.coupon_type,
+        p.create_time desc
+    </select>
+    <select id="queryApiCouponListNoLogin" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Page_List" />
+        from
+        t_coupon p
+        <where>
+            p.is_deleted = 0
+            and p.status = 1
+            and p.give_type = 0
+            and p.recycle_activity = 0
+            and p.discount != 10
+        </where>
+        order by
+        p.coupon_type,
+        p.create_time desc
+
+
+
+    </select>
+
+</mapper>

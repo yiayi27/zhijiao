@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.datasets.mapper.DcShopRankingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.datasets.api.entity.DcShopRanking">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="product_id" property="productId"/>
+        <result column="provider_id" property="providerId"/>
+        <result column="group_leader_id" property="groupLeaderId"/>
+        <result column="trading_volume" property="tradingVolume"/>
+        <result column="trade_volume" property="tradeVolume"/>
+        <result column="url" property="url"/>
+        <result column="nick" property="nick"/>
+        <result column="text" property="text"/>
+        <result column="type" property="type"/>
+        <result column="superior_id" property="superiorId"/>
+        <result column="yyyy" property="yyyy"/>
+        <result column="yyyyMM" property="yyyyMM"/>
+        <result column="yyyyMMdd" property="yyyyMMdd"/>
+    </resultMap>
+
+    <resultMap id="BaseDealResultMap" type="com.medusa.gruul.datasets.web.model.RankingsDto">
+        <result column="deal" property="tradingVolume"/>
+        <result column="ids" property="id"/>
+    </resultMap>
+
+    <resultMap id="BaseGMVResultMap" type="com.medusa.gruul.datasets.web.model.RankingsDto">
+        <result column="deal" property="tradeVolume"/>
+        <result column="ids" property="id"/>
+    </resultMap>
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, shop_id, product_id,group_leader_id,provider_id,trading_volume, trade_volume, url, nick, text, type, superior_id, yyyy, yyyyMM, yyyyMMdd
+    </sql>
+
+    <select id="selectVbByType" resultMap="BaseDealResultMap">
+        SELECT
+        SUM(trading_volume) deal,
+        <if test="code == 3">
+            product_id ids
+        </if>
+        <if test="code == 2">
+            provider_id ids
+        </if>
+        <if test="code == 1">
+            group_leader_id ids
+        </if>
+        FROM
+        t_dc_shop_ranking tdsr
+        WHERE
+        tdsr.yyyyMM = ${month}
+        AND
+        tdsr.type = ${code}
+        GROUP BY
+        <if test="code == 3">
+            product_id
+        </if>
+        <if test="code == 2">
+            provider_id
+        </if>
+        <if test="code ==1">
+            group_leader_id
+        </if>
+        ORDER BY
+        deal DESC LIMIT 5
+    </select>
+
+    <select id="selectGvmByType" resultMap="BaseGMVResultMap">
+        SELECT
+        SUM(trade_volume) deal,
+        <if test="code == 3">
+            product_id ids
+        </if>
+        <if test="code == 2">
+            provider_id ids
+        </if>
+        FROM
+        t_dc_shop_ranking tdsr
+        WHERE
+        tdsr.yyyyMM = ${month}
+        AND
+        tdsr.type = ${code}
+        GROUP BY
+        <if test="code == 3">
+            product_id
+        </if>
+        <if test="code == 2">
+            provider_id
+        </if>
+        ORDER BY
+        deal DESC LIMIT 5
+    </select>
+
+
+
+
+
+</mapper>

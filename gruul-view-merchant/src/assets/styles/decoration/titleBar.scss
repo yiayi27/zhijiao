@@ -1,0 +1,21 @@
+// 标题栏
+
+@import '../my-mixins/utils.scss';
+
+.titleBar {
+  &__item {
+    &.is-style-one {
+      line-height: 44px;
+      text-align: center;
+    }
+
+    &.is-style-two {
+      height: 44px;
+      padding-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid red;
+    }
+  }
+}

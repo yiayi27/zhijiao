@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.manager.MemberCouponMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.MemberCouponVo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="coupon_id" property="couponId" />
+        <result column="name" property="name" />
+        <result column="effective_type" property="effectiveType" />
+        <result column="effective_days" property="effectiveDays" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="product_type" property="productType" />
+        <result column="coupon_type" property="couponType" />
+        <result column="discount" property="discount" />
+        <result column="discount_amount" property="discountAmount" />
+        <result column="condition_amount" property="conditionAmount" />
+        <result column="issue_quantity" property="issueQuantity" />
+        <result column="limit_quantity" property="limitQuantity" />
+        <result column="use_status" property="useStatus" />
+        <result column="status" property="status" />
+        <collection property="couponProducts" ofType="com.medusa.gruul.discount.api.model.vo.manager.CouponProductVo" column="coupon_id"
+                    select="queryCouponProduct" />
+    </resultMap>
+
+    <resultMap id="CouponProductResultMap" type="com.medusa.gruul.discount.api.model.vo.manager.CouponProductVo">
+        <id column="c_id" property="id"/>
+        <result column="c_product_id" property="productId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, coupon_id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, status
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, status
+    </sql>
+
+
+    <sql id="Base_Coupon_Product_List">
+        c.id AS c_id, c.product_id as c_product_id
+    </sql>
+
+    <select id="queryGoingMemberCouponList" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        id, coupon_id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, status, use_status
+        FROM
+        t_member_coupon p
+        <where>
+            p.is_deleted = 0
+            AND p.user_id = #{userId}
+            AND p.use_status = 0
+            AND p.status = 1
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <select id="queryCouponProduct" resultMap="CouponProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Coupon_Product_List"/>
+        FROM
+        t_coupon_product c
+        WHERE
+        c.is_deleted = 0
+        AND c.coupon_id = #{coupon_id}
+    </select>
+    <select id="findMemberCouponForOrder" resultMap="BaseResultMap">
+        SELECT
+        id, coupon_id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, status, use_status
+        FROM
+        t_member_coupon p
+        <where>
+            p.is_deleted = 0
+            AND p.id = #{couponId}
+            AND p.user_id = #{userId}
+            AND p.use_status = 0
+            AND p.status = 1
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc limit 1
+    </select>
+
+    <select id="queryMemberCouponListForTask" resultMap="BaseResultMap" >
+        SELECT
+        id, create_time, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, use_status, status
+        FROM
+        t_member_coupon p
+        <where>
+            p.is_deleted = 0
+            AND p.use_status = 0
+            AND p.status <![CDATA[ <> ]]> 2
+        </where>
+        ORDER BY
+        p.status,
+        p.create_time desc
+    </select>
+
+    <update id="updateMemberCouponForTask" parameterType="com.medusa.gruul.discount.api.model.vo.manager.MemberCouponVo">
+        update
+        t_member_coupon p
+        set p.status = #{status}
+        <where>
+            p.id = #{id}
+        </where>
+    </update>
+</mapper>

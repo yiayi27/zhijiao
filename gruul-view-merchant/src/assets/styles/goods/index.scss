@@ -1,0 +1,306 @@
+@import './scss/public/index.scss';
+
+.page {
+  padding: 20px;
+}
+
+.goodForm {
+  :deep() {
+    // height: 740px;
+    overflow: auto;
+    .topTag {
+      display: flex;
+      height: 40px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      li {
+        padding-left: 20px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        margin-right: 30px;
+        cursor: pointer;
+        span {
+          line-height: 38px;
+          display: block;
+          padding: 0 20px;
+        }
+        &.topTag--active span {
+          border-bottom: #2d8cf0 2px solid;
+          color: #2d8cf0;
+        }
+      }
+    }
+
+    .pageRoll {
+      // overflow: auto;
+      // overflow-x: hidden;
+      // height: 800px;
+      padding-bottom: 80px;
+    }
+
+    .pageRoll::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .navLine {
+      margin-top: 25px;
+      margin-bottom: 25px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      background-color: #f8f8f8;
+      padding-left: 15px;
+      font-weight: bold;
+    }
+
+    .spec {
+      margin-left: 40px;
+      &__left {
+        margin-left: 8px;
+      }
+    }
+
+    .specitem {
+      margin-left: 124px;
+      margin-top: 10px;
+      &__inp {
+        display: flex;
+        align-items: flex-end;
+        margin-top: 10px;
+        &--inside {
+          width: 50px;
+          margin: 0px 10px;
+        }
+      }
+    }
+
+    .dialogTitle {
+      display: flex;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .dialog__line {
+      display: flex;
+      padding-left: 20px;
+      padding-top: 10px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      &__fir {
+        width: 100%;
+        text-align: right;
+        display: flex;
+        align-items: center;
+      }
+      &__sec {
+        width: 100%;
+        display: flex;
+        margin-top: 10px;
+        &--head {
+          padding: 10px;
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+          background-color: #f6f6f6;
+        }
+        &--body {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid #999;
+          padding: 10px;
+        }
+      }
+    }
+
+    .add--text {
+      line-height: 30px;
+      cursor: pointer;
+      color: #2d8cf0;
+      margin-left: 90px;
+      margin-top: 10px;
+    }
+
+    .pick--dia {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 30px;
+      background-color: #e9f3fb;
+    }
+
+    .pick--input {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+    }
+
+    .valueName {
+      margin-top: 10px;
+      width: 620px;
+      padding: 20px 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      &__noList {
+        display: flex;
+        justify-content: center;
+        color: #d7d7d7;
+        font-size: 15px;
+        margin-left: 20px;
+        margin-top: 20px;
+      }
+      &__List {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        div {
+          color: red;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .product {
+      margin-top: 10px;
+    }
+
+    .productVideo__uploader {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .productImg__uploader {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .productImg__uploader:hover {
+      border-color: #409eff;
+    }
+
+    .product__productImg {
+      width: 100px;
+      height: 100px;
+      display: inline-block;
+    }
+
+    .product__productVideo {
+      width: 250px;
+      height: 120px;
+      display: inline-block;
+    }
+
+    .product__productVideo--uploader--icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 250px;
+      height: 120px;
+      line-height: 120px;
+      text-align: center;
+    }
+
+    .product__productImg--uploader--icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 100px;
+      height: 100px;
+      line-height: 80px;
+      text-align: center;
+    }
+
+    .product__productImg--uploader--add {
+      position: absolute;
+      top: 55px;
+      left: 20px;
+      color: #7f7f7f;
+    }
+
+    .productImg-uploader-clear {
+      position: absolute;
+      right: -0.375rem;
+      top: -0.375rem;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .productImg-text {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      font-size: 12px;
+      text-align: center;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 0px 0px 6px 6px;
+      color: #ffffff;
+    }
+
+    .productImg-icon {
+      position: absolute;
+      right: -8px;
+      top: -5px;
+      font-size: 20px;
+      text-align: center;
+      color: #7f7f7f;
+      background-color: white;
+      border-radius: 50px;
+    }
+
+    .codeOne {
+      display: flex;
+      margin-left: 40px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .serveMsg {
+      display: flex;
+    }
+
+    .shopMsg {
+      display: flex;
+      padding-top: 10px;
+      // margin-left: 20px;
+      &__right {
+        margin-left: 20px;
+        &--wed {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+          height: 40px;
+          &--text {
+            margin-top: 10px;
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.goodForm::-webkit-scrollbar {
+  display: none;
+}
+
+.next {
+  width: 1010px;
+  position: fixed;
+  bottom: 10px;
+  padding: 15px 0px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 0px 10px 0px #d5d5d5;
+  background-color: white;
+  margin-left: -14px;
+  z-index: 100;
+}

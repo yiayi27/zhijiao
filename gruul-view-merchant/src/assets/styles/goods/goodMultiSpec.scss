@@ -1,0 +1,179 @@
+@import '../my-mixins/utils.scss';
+
+// 规格
+.spec {
+  // 类型
+  &__type {
+  }
+}
+
+:deep() {
+  .el-form-item__label {
+    width: 100px;
+  }
+  .norm {
+    width: 100%;
+    font-size: 14px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    &__list {
+      width: 100%;
+    }
+
+    &__title {
+      margin: 0 20px 0 30px;
+    }
+
+    &__item {
+      color: #606266;
+    }
+
+    &__item__name {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      &--label {
+        width: 80px;
+      }
+
+      &--del {
+        margin-left: 10px;
+      }
+    }
+
+    &__item__value {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    &__item__value__content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      cursor: move;
+    }
+
+    &__item__name--left {
+      display: flex;
+      align-items: center;
+
+      .el-form-item {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .specDetail {
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    &__table {
+      width: 800px;
+      display: flex;
+      flex-direction: column;
+      overflow-x: auto;
+      background: #fcfcfc;
+    }
+    &__title {
+      margin: 0 30px;
+    }
+    &__table__title {
+      line-height: 50px;
+      display: flex;
+      &--primary {
+        flex-shrink: 0;
+        width: 150px;
+      }
+      &--custom {
+        flex-shrink: 0;
+        width: 100px;
+      }
+      &--header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+    }
+    &__table__item {
+      display: flex;
+
+      &--font {
+        flex-shrink: 0;
+        width: 100px;
+        line-height: 70px;
+        color: #606266;
+      }
+      &--input {
+        flex-shrink: 0;
+        width: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+      }
+      &--upload {
+        flex-shrink: 0;
+        width: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  .batch {
+    margin: 30px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &__list {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      color: #409eff;
+    }
+    &__list-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 20px;
+
+      span {
+        margin-right: 10px;
+      }
+
+      .el-input {
+        width: 80px;
+      }
+    }
+  }
+}
+
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+
+.service__guarantee--form {
+  :deep(.el-form-item__content) {
+    display: block;
+  }
+}

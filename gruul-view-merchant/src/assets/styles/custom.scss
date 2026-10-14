@@ -1,0 +1,92 @@
+.el-tabs__active-bar.is-top {
+  height: 3px !important;
+  background: #2e99f3;
+  border-radius: 2px;
+}
+
+.el-tabs__nav-wrap::after {
+  background-color: #f7f7f7;
+}
+
+.el-button-group.fix {
+  .el-button--primary {
+    border-color: #ecf5ff !important;
+  }
+
+  .dropdown__fix {
+    padding: 0;
+
+    &.more {
+      &::before {
+        content: '';
+        width: 1px;
+        height: 12px;
+        background: rgba(46, 153, 243, 1);
+        opacity: 0.46;
+        position: absolute;
+        top: 10px;
+        right: 34px;
+      }
+    }
+
+    &--more {
+      display: inline-block;
+      width: 32px;
+      height: 30px;
+      position: relative;
+      line-height: 24px;
+      // top: -4px;
+      color: #2e99f3;
+    }
+    &:hover {
+      color: #fff;
+      span {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.el-dropdown-menu__item {
+  padding: 3px 15px !important;
+}
+
+.primary {
+  color: var(--el-color-primary);
+}
+
+.el-tooltip__trigger:focus-visible {
+  outline: unset;
+}
+
+.el-input-number .el-input__inner {
+  text-align: left !important;
+}
+
+/*滚动条固定组件（必须）*/
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/*滚动条的滑块按钮*/
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(50, 50, 50, 0.2);
+  border-radius: 40px;
+  // 抓手
+  cursor: grab;
+  // 点击态 cursor: grabbing;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+// 修复 el-dropdown 无障碍访问警告
+.el-dropdown__popper[aria-hidden='true'] {
+  .el-dropdown-menu__item {
+    pointer-events: none;
+    &:focus {
+      outline: none;
+    }
+  }
+}

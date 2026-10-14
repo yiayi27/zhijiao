@@ -1,0 +1,9 @@
+@import '../my-mixins/utils.scss';
+
+.spike {
+  &__edit {
+    .date--item {
+      width: 190px;
+    }
+  }
+}

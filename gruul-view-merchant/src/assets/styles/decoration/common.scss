@@ -1,0 +1,22 @@
+.decoration {
+  :deep(&__form) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    &--l {
+    }
+    &--r {
+    }
+  }
+}
+
+:deep(.form) {
+  &__input {
+    &--right {
+      width: 200px;
+      margin-left: 10px;
+    }
+  }
+}

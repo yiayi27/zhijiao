@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralGoods">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="t_integral_shop_id" property="tIntegralShopId"/>
+        <result column="integral_good_name" property="integralGoodName"/>
+        <result column="guide_price" property="guidePrice"/>
+        <result column="inventory" property="inventory"/>
+        <result column="integral_price" property="integralPrice"/>
+        <result column="attribute_id" property="attributeId"/>
+        <result column="attribute_name" property="attributeName"/>
+        <result column="pic" property="pic"/>
+        <result column="album_pics" property="albumPics"/>
+        <result column="sales" property="sales"/>
+        <result column="freight_template_id" property="freightTemplateId"/>
+        <result column="status" property="status"/>
+        <result column="product_sn" property="productSn"/>
+        <result column="detail" property="detail"/>
+        <result column="attribute" property="attribute"/>
+        <result column="unit" property="unit"/>
+        <result column="weight" property="weight"/>
+        <result column="type" property="type"/>
+    </resultMap>
+    <!--积分商品基础信息 IntegralGoodVo -->
+    <resultMap id="IntegralGoodBaseResultMap" type="com.medusa.gruul.integral.web.model.vo.IntegralGoodVo">
+        <id column="id" property="id"/>
+        <result column="t_integral_shop_id" property="tIntegralShopId"/>
+        <result column="integral_good_name" property="integralGoodName"/>
+        <result column="guide_price" property="guidePrice"/>
+        <result column="inventory" property="inventory"/>
+        <result column="integral_price" property="integralPrice"/>
+        <result column="attribute_id" property="attributeId"/>
+        <result column="attribute_name" property="attributeName"/>
+        <result column="pic" property="pic"/>
+        <result column="album_pics" property="albumPics"/>
+        <result column="sales" property="sales"/>
+        <result column="freight_template_id" property="freightTemplateId"/>
+        <result column="status" property="status"/>
+        <result column="product_sn" property="productSn"/>
+        <result column="detail" property="detail"/>
+        <result column="attribute" property="attribute"/>
+        <result column="unit" property="unit"/>
+        <result column="weight" property="weight"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="interalGoodsAttibutes"
+                    ofType="com.medusa.gruul.integral.web.model.vo.InteralGoodsAttibuteVo" column="id"
+                    select="queryInteralGoodsAttibutes" />
+    </resultMap>
+
+    <!--积分商品属性基础信息 InteralGoodsAttibuteVo-->
+    <resultMap id="IntegralGoodAttributeResultMap"
+               type="com.medusa.gruul.integral.web.model.vo.InteralGoodsAttibuteVo">
+        <id column="iga_id" property="id"/>
+        <result column="iga_integral_goods_id" property="integralGoodsId"/>
+        <result column="iga_name" property="name"/>
+        <result column="iga_value" property="value"/>
+    </resultMap>
+
+    <!--积分商品通用查询列-->
+    <sql id="Base_Integral_Good_List">
+        i.id, i.create_time,i.shop_id,i.integral_good_name,i.guide_price,i.inventory,i.integral_price,i.attribute_id, i.attribute_name,
+        i.pic, i.album_pics, i.sales,i.freight_template_id, i.status, i.product_sn,i.detail ,i.attribute, i.unit, i.weight
+    </sql>
+
+    <!--积分商品属性通用查询列-->
+    <sql id="Base_Integral_Good_Attribute_List">
+        iga.id AS iga_id ,iga.integral_goods_id AS iga_integral_goods_id ,iga.name AS iga_name,iga.value AS iga_value
+    </sql>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, t_integral_shop_id, integral_good_name, guide_price, inventory, integral_price, attribute_id, attribute_name, pic, album_pics, sales, freight_template_id, status, product_sn, detail, attribute, unit, weight, type
+    </sql>
+
+
+    <select id="getIntegralGoodsInfo" resultMap="IntegralGoodBaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Integral_Good_List"/>
+        FROM
+        t_integral_goods i
+        <where>
+            i.is_deleted = 0 AND i.id = #{id}
+        </where>
+        LIMIT 1
+    </select>
+
+    <select id="queryInteralGoodsAttibutes" resultMap="IntegralGoodAttributeResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Integral_Good_Attribute_List"/>
+        FROM
+        t_integral_goods_attribute iga
+        WHERE
+        iga.is_deleted = 0
+        AND
+        iga.integral_goods_id = #{id}
+    </select>
+
+
+    <select id="selectIntegralGoodsList" resultMap="IntegralGoodBaseResultMap"
+            parameterType="com.medusa.gruul.integral.web.model.vo.IntegralGoodVo">
+        SELECT
+        <include refid="Base_Integral_Good_List"/>
+        FROM
+        t_integral_goods i
+        <where>
+            i.is_deleted = 0
+            <if test="integralGoodsParam.status != null">
+                AND i.status = #{integralGoodsParam.status}
+            </if>
+            <if test="integralGoodsParam.productSn != null and integralGoodsParam.productSn != ''">
+                AND i.product_sn LIKE CONCAT ('%', #{integralGoodsParam.productSn},'%')
+            </if>
+            <if test="integralGoodsParam.integralGoodName != null and integralGoodsParam.integralGoodName != ''">
+                AND i.integral_good_name LIKE CONCAT('%', #{integralGoodsParam.integralGoodName},'%')
+            </if>
+        </where>
+        ORDER BY
+        i.create_time
+        DESC
+    </select>
+
+    <update id="updateIntegralGoodsStatus">
+        UPDATE
+        t_integral_goods
+        SET
+        <if test="status == 1">
+            status = 0
+        </if>
+        <if test="status == 0">
+            status = 1
+        </if>
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <!--********************************************小程序端功能mapper实现*************************************************************-->
+
+    <select id="selectApiIntegralGoodsList" resultMap="IntegralGoodBaseResultMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralGoodVo">
+        SELECT
+        <include refid="Base_Integral_Good_List"/>
+        FROM
+        t_integral_goods i
+        WHERE
+        i.is_deleted = 0
+        AND
+        i.status = 1
+
+        ORDER BY
+        i.create_time
+        DESC
+    </select>
+</mapper>

@@ -1,0 +1,131 @@
+@import '../my-mixins/utils.scss';
+
+.default__table {
+  margin-top: 17px;
+
+  :deep(thead tr th) {
+    background-color: #f6f8fa;
+  }
+}
+
+.directpage {
+  &__header {
+    &--timepicker {
+      width: 245px;
+    }
+
+    &--type {
+      width: 90px;
+      margin-left: 15px;
+    }
+  }
+}
+
+.orderpage {
+  position: relative;
+
+  &__header {
+    position: relative;
+
+    &--type {
+      width: 120px;
+    }
+
+    &--name {
+      width: 230px;
+      margin-left: 15px;
+    }
+
+    &--export {
+      float: right;
+    }
+  }
+
+  &__order {
+    display: flex;
+
+    &--img {
+      width: 65px;
+      height: 65px;
+      vertical-align: middle;
+    }
+
+    &--name {
+      flex: 1;
+      vertical-align: middle;
+      line-height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding-left: 5px;
+    }
+  }
+
+  &__export {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.letthempage {
+  position: relative;
+
+  &__header {
+    position: relative;
+
+    &--type {
+      width: 130px;
+      margin-left: 15px;
+    }
+
+    &--name {
+      width: 230px;
+    }
+
+    &--export {
+      float: right;
+    }
+  }
+
+  &__order {
+    display: flex;
+
+    &--img {
+      width: 65px;
+      height: 65px;
+      vertical-align: middle;
+    }
+
+    &--name {
+      flex: 1;
+      vertical-align: middle;
+      line-height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding-left: 5px;
+    }
+  }
+
+  &__export {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.histinvoice {
+  &__header {
+    &--tip {
+      color: #666;
+    }
+
+    &--datapicker {
+      width: 170px;
+      margin-left: 10px;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MiniAccountBlanceDetailMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MiniAccountBlanceDetail">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="shop_user_id" property="shopUserId"/>
+        <result column="option_value" property="optionValue"/>
+        <result column="option_type" property="optionType"/>
+        <result column="option_source" property="optionSource"/>
+        <result column="business_id" property="businessId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_time,
+        is_deleted,
+        update_time,
+        id, user_id, shop_id, shop_user_id, option_value, option_type, option_source,business_id
+    </sql>
+
+
+</mapper>

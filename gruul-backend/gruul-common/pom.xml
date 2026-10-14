@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.medusa</groupId>
+        <artifactId>gruul</artifactId>
+        <version>1.0</version>
+    </parent>
+
+
+    <artifactId>gruul-common</artifactId>
+    <packaging>pom</packaging>
+    <name>gruul-common</name>
+    <description>公共模块</description>
+
+    <modules>
+        <module>gruul-common-base</module>
+        <module>gruul-common-auth-model</module>
+        <module>gruul-common-redis</module>
+        <module>gruul-common-web</module>
+        <module>gruul-common-module-service</module>
+        <module>gruul-common-global-model</module>
+
+        <module>gruul-common-security</module>
+        <module>gruul-common-system</module>
+    </modules>
+    <properties>
+        <gruul.version>1.0</gruul.version>
+    </properties>
+    <dependencies>
+        <!--   hutool -all     -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <!-- jetbrains annotations-->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.medusa</groupId>
+                <artifactId>gruul-common-redis</artifactId>
+                <version>1.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

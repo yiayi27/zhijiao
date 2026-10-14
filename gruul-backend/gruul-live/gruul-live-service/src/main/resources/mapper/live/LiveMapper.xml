@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.live.mapper.LiveMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.live.api.entity.Live">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="room_id" property="roomId"/>
+        <result column="live_name" property="liveName"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="anchor" property="anchor"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="status" property="status"/>
+        <result column="cover_img" property="coverImg"/>
+        <result column="anchor_img" property="anchorImg"/>
+        <result column="share_img" property="shareImg"/>
+    </resultMap>
+    <!--直播基础信息 IntegralGoodVo -->
+    <resultMap id="LiveBaseResultMap" type="com.medusa.gruul.live.model.vo.LiveVo">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="room_id" property="roomId"/>
+        <result column="live_name" property="liveName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="anchor" property="anchor"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="status" property="status"/>
+        <result column="cover_img" property="coverImg"/>
+        <result column="anchor_img" property="anchorImg"/>
+        <result column="share_img" property="shareImg"/>
+    </resultMap>
+
+
+    <select id="selectLiveList" resultMap="LiveBaseResultMap"
+            parameterType="com.medusa.gruul.live.model.vo.LiveVo">
+        SELECT
+        i.id,i.shop_id,i.room_id,i.live_name,i.create_time,i.start_time,i.end_time,
+        i.anchor,i.view_count,i.like_count,i.status,i.cover_img,i.anchor_img,i.share_img,
+        i.sort, i.first_flag
+        FROM
+        t_live i
+        <where>
+            i.is_deleted = 0
+            <if test="liveParam.liveName != null and liveParam.liveName != ''">
+                AND i.live_name LIKE CONCAT ('%', #{liveParam.liveName},'%')
+            </if>
+            <if test="liveParam.anchor != null and liveParam.anchor != ''">
+                AND i.anchor LIKE CONCAT('%', #{liveParam.anchor},'%')
+            </if>
+            <if test="liveParam.startTime != null and liveParam.startTime != ''">
+                and i.start_time &gt;= DATE_FORMAT('${liveParam.startTime} 00:00:00', '%Y-%m-%d %H:%i:%S')
+            </if>
+            <if test="liveParam.endTime != null and liveParam.endTime != ''">
+                and i.end_time &lt;= DATE_FORMAT('${liveParam.endTime} 23:59:59', '%Y-%m-%d %H:%i:%S')
+            </if>
+        </where>
+        ORDER BY
+        i.`first_flag`
+        DESC
+    </select>
+
+    <update id="updateLaunchArea">
+        UPDATE
+        t_live
+        <if test="liveParam.firstFlag != null and liveParam.firstFlag == 1">
+            , ( SELECT ( IF ( sort IS NOT NULL, sort, 0 ) + 1 ) sort FROM t_live ORDER BY sort DESC LIMIT 1 ) t2
+        </if>
+        SET
+        <if test="liveParam.firstFlag != null and liveParam.firstFlag == 1">
+            t_live.`first_flag` = #{liveParam.firstFlag}, t_live.`sort` = t2.sort
+        </if>
+
+        <if test="liveParam.firstFlag != null and liveParam.firstFlag == 0">
+            `first_flag` = #{liveParam.firstFlag}, `sort` = 0
+        </if>
+        WHERE id = #{liveParam.id,jdbcType=INTEGER}
+    </update>
+
+    <update id="truncate">
+        truncate table t_live
+    </update>
+
+    <update id="updateViewCount">
+        UPDATE
+        t_live
+        SET
+        view_count = #{liveParam.viewCount},update_time = SYSDATE()
+        WHERE id = #{liveParam.id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateLikeCount">
+        UPDATE
+        t_live
+        SET
+        like_count = #{liveParam.likeCount},update_time = SYSDATE()
+        WHERE id = #{liveParam.id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByRoomId" resultMap="LiveBaseResultMap"
+            parameterType="com.medusa.gruul.live.model.vo.LiveVo">
+        SELECT
+        i.id,i.shop_id,i.room_id,i.live_name,i.create_time,i.start_time,i.end_time,
+        i.anchor,i.view_count,i.like_count,i.status,i.cover_img,i.anchor_img,i.share_img
+        FROM
+        t_live i
+        <where>
+            i.is_deleted = 0
+            <if test="liveParam.shopId != null and liveParam.shopId != ''">
+                AND i.shop_id = #{liveParam.shopId}
+            </if>
+            <if test="liveParam.roomId != null and liveParam.roomId != ''">
+                AND i.room_id = #{liveParam.roomId}
+            </if>
+        </where>
+    </select>
+
+
+
+
+
+    <select id="queryLive" resultMap="LiveBaseResultMap"
+            parameterType="com.medusa.gruul.live.model.vo.LiveVo">
+        SELECT
+        i.id,i.shop_id,i.room_id,i.live_name,i.create_time,i.start_time,i.end_time,
+        i.anchor,i.view_count,i.like_count,i.status,i.cover_img,i.anchor_img,i.share_img
+        FROM
+        t_live i
+        <where>
+            i.is_deleted = 0
+            <if test="liveParam.shopId != null and liveParam.shopId != ''">
+                AND i.shop_id = #{liveParam.shopId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteNotExist">
+        delete from t_live where id = #{id}
+    </delete>
+
+
+    <!--********************************************小程序端功能mapper实现*************************************************************-->
+
+    <select id="selectApiLiveList" resultMap="LiveBaseResultMap"
+            resultType="com.medusa.gruul.live.model.vo.LiveVo">
+        SELECT
+        i.id,i.shop_id,i.room_id,i.live_name,i.create_time,i.start_time,i.end_time,
+        i.anchor,i.view_count,i.like_count,i.status,i.cover_img,i.anchor_img,i.share_img,i.first_flag
+        FROM
+        t_live i
+        WHERE
+        i.is_deleted = 0
+
+        ORDER BY
+        i.create_time
+        DESC
+    </select>
+    <select id="selectLiveInfo" resultType="com.medusa.gruul.live.api.entity.Live">
+        select
+           shop_id
+        FROM
+            t_live
+         WHERE
+            is_deleted = 0
+        GROUP BY
+           shop_id
+    </select>
+
+
+</mapper>

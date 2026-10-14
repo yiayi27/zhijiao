@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralClockMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralClock">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="running_days" property="runningDays"/>
+        <result column="sign_in_state" property="signInState"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果Dto -->
+    <resultMap id="BaseResultMapDto" type="com.medusa.gruul.integral.web.model.dto.manager.IntegralClockDto">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="running_days" property="runningDays"/>
+        <result column="sign_in_state" property="signInState"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, user_id, running_days , sign_in_state
+    </sql>
+    <!--通用查询结果列DTO-->
+    <sql id="Base_Column_List_Dto">
+        id, user_id, running_days , sign_in_state
+    </sql>
+
+    <update id="updateRunningDays" parameterType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        UPDATE
+        t_integral_clock tic
+        SET
+        tic.running_days = #{integralClock.runningDays}
+        <where>
+            tic.id = #{integralClock.id}
+        </where>
+    </update>
+    <update id="updateSignIn" parameterType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        UPDATE
+        t_integral_clock tic
+        SET
+        tic.sign_in_state= #{integralClock.signInState}
+        <where>
+            tic.id = #{integralClock.id}
+        </where>
+    </update>
+
+
+    <select id="selectByUserId" resultType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_clock
+        WHERE
+        user_id = #{userId}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="getUserSingInInfo"
+            resultType="com.medusa.gruul.integral.web.model.dto.manager.IntegralClockDto">
+        SELECT
+        <include refid="Base_Column_List_Dto"/>
+        FROM
+        t_integral_clock
+        WHERE
+        user_id = #{userId}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="getDidnotSignIn" resultType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_clock
+        WHERE
+        sign_in_state = false
+        AND
+        is_deleted = 0
+    </select>
+
+    <select id="findUserId" resultType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_clock
+        WHERE
+        user_id = #{userId}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+    <select id="getAllUserSingInInfo" resultType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_clock
+        WHERE
+        is_deleted = 0
+    </select>
+
+    <select id="selectShopUserInfo" resultType="com.medusa.gruul.integral.api.entity.IntegralClock">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_clock
+        WHERE
+        shop_id = #{shopId}
+        AND
+        is_deleted = 0
+
+
+    </select>
+
+</mapper>

@@ -1,0 +1,101 @@
+@import '../my-mixins/utils.scss';
+
+.shop {
+  height: 100%;
+
+  &__header {
+    &--user {
+      margin-bottom: 15px;
+    }
+
+    &--banner {
+      .banner {
+        height: 180px;
+      }
+    }
+  }
+
+  &__list {
+    background: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+
+    &--form {
+      margin-bottom: 10px;
+    }
+
+    &--empty {
+      min-height: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    &--create {
+      margin-left: 15px;
+    }
+
+    .myShop {
+      padding: 20px 40px;
+    }
+  }
+}
+
+.info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 10px;
+  text-align: left;
+  vertical-align: center;
+
+  &__img {
+    width: 80px;
+    height: 80px;
+    flex: 0 0 80px;
+    border-radius: 40px;
+  }
+  &__msg {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-left: 10px;
+    height: 80px;
+
+    &--tags {
+      cursor: pointer;
+    }
+  }
+}
+
+.wrap {
+  display: flex;
+  font-size: 12px;
+
+  &__set {
+    padding: 10px;
+    display: flex;
+    height: 35px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    //&--select {
+    //  width: 30px;
+    //  height: 35px;
+    //  border: 1px solid #696c72;
+    //  border-left: none;
+    //  display: flex;
+    //  justify-content: center;
+    //  flex-direction: column;
+    //  cursor: pointer;
+    //  border-radius: 0 3px 3px 0;
+    //}
+  }
+}

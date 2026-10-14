@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralCouponOrderMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralCouponOrder">
+        <id column="id" property="id"/>
+        <result column="condition_amount" property="conditionAmount"/>
+        <result column="discount_amount" property="discountAmount"/>
+        <result column="discount" property="discount"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="user_id" property="userId"/>
+        <result column="wxuser_name" property="wxuserName"/>
+        <result column="coupon_validity" property="couponValidity"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="back_remark" property="backRemark"/>
+        <result column="real_pay_integral" property="realPayIntegral"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!--积分优惠券订单基础映射结果-->
+    <resultMap id="IntegralCouponOrderBaseResultMap"
+               type="com.medusa.gruul.integral.web.model.dto.manager.IntegralCouponOrderDto">
+        <id column="id" property="id"/>
+        <result column="condition_amount" property="conditionAmount"/>
+        <result column="discount_amount" property="discountAmount"/>
+        <result column="discount" property="discount"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="wxuser_name" property="wxuserName"/>
+        <result column="real_pay_integral" property="realPayIntegral"/>
+        <result column="coupon_validity" property="couponValidity"/>
+        <result column="effective_type" property="effectiveType"/>
+        <result column="effective_days" property="effectiveDays"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="back_remark" property="backRemark"/>
+    </resultMap>
+    <!--通用查询列-->
+    <sql id="Base_Column_List">
+        id,condition_amount,discount_amount,discount,coupon_type,wxuser_name,coupon_validity,
+        effective_type,effective_days,
+        send_time,real_pay_integral,back_remark,create_time
+    </sql>
+
+    <select id="getIntegralCouponOrderList" resultMap="IntegralCouponOrderBaseResultMap"
+            resultType="com.medusa.gruul.integral.web.model.dto.manager.IntegralCouponOrderDto">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_coupon_order
+        WHERE
+        is_deleted = 0
+        <if test="integralCouponOrderParam.wxuserName != null and integralCouponOrderParam.wxuserName != '' ">
+            AND wxuser_name LIKE CONCAT('%',#{integralCouponOrderParam.wxuserName},'%')
+        </if>
+        ORDER BY
+        create_time
+        DESC
+    </select>
+</mapper>

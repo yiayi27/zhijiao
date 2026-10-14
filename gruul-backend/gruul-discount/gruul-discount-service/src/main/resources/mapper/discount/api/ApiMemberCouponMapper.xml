@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.api.ApiMemberCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.api.ApiMemberCouponVo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="coupon_id" property="couponId" />
+        <result column="name" property="name" />
+        <result column="effective_type" property="effectiveType" />
+        <result column="effective_days" property="effectiveDays" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="product_type" property="productType" />
+        <result column="coupon_type" property="couponType" />
+        <result column="discount" property="discount" />
+        <result column="discount_amount" property="discountAmount" />
+        <result column="condition_amount" property="conditionAmount" />
+        <result column="issue_quantity" property="issueQuantity" />
+        <result column="limit_quantity" property="limitQuantity" />
+        <result column="use_status" property="useStatus" />
+        <result column="status" property="status" />
+        <result column="give_type" property="giveType" />
+        <result column="integral" property="integral" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, create_time, coupon_id, name, effective_type, effective_days, start_time, end_time, product_type, coupon_type, discount, discount_amount, condition_amount, issue_quantity, limit_quantity, use_status, status, give_type, integral
+    </sql>
+
+    <select id="queryMemberCouponListByUserId" resultMap="BaseResultMap">
+        SELECT
+        id, create_time, name, product_type, effective_type, effective_days, start_time, end_time, coupon_type, discount, discount_amount, condition_amount, use_status, status, integral
+        FROM
+        t_member_coupon p
+        <where>
+            p.user_id = #{userId}
+            and p.is_deleted = 0
+        </where>
+        ORDER BY
+        p.coupon_type,
+        p.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.api.ApiSolitaireActivityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseActivityResultMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiSolitaireActivityVo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="preheat_hour" property="preheatHour" />
+        <result column="product_type" property="productType" />
+        <result column="cover_poster" property="coverPoster" />
+        <result column="content" property="content" />
+        <result column="status" property="status" />
+        <result column="views" property="views" />
+        <collection property="apiSolitaireActivityProductVos" ofType="com.medusa.gruul.solitaire.api.model.vo.api.ApiSolitaireActivityProductVo" column="id"
+                    select="queryActivityProduct" />
+    </resultMap>
+
+    <resultMap id="ActivityProductResultMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiSolitaireActivityProductVo">
+        <id column="c_id" property="id"/>
+        <result column="c_product_id" property="productId"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id, create_time, name, start_time, end_time, preheat_hour, product_type, cover_poster, content, status, views
+    </sql>
+
+
+    <sql id="Base_Activity_Product_List">
+        c.id AS c_id, c.product_id as c_product_id
+    </sql>
+
+    <select id="queryCurrentActivity" resultMap="BaseActivityResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.is_deleted = 0
+        </where>
+        ORDER BY
+        status, p.start_time asc
+    </select>
+
+    <select id="queryReadyAndGoingActivity" resultMap="BaseActivityResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            (p.status = 0 or p.status = 1)
+            and p.is_deleted = 0
+        </where>
+        ORDER BY
+        p.start_time
+    </select>
+
+    <select id="queryActivityById" resultMap="BaseActivityResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_activity p
+        <where>
+            p.id = #{id}
+            AND p.is_deleted = 0
+        </where>
+        ORDER BY
+        p.create_time desc
+    </select>
+
+
+    <select id="queryActivityProduct" resultMap="ActivityProductResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Activity_Product_List"/>
+        FROM
+        t_solitaire_activity_product c
+        WHERE
+        c.is_deleted = 0
+        AND c.activity_id = #{id}
+    </select>
+
+
+</mapper>

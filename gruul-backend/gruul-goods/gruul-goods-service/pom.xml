@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.medusa</groupId>
+        <artifactId>gruul-goods</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>gruul-goods-service</artifactId>
+    <packaging>jar</packaging>
+
+    <description>gruul 商品模块</description>
+
+    <dependencies>
+        <!--api模块-->
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-goods-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-discount-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-order-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-logistics-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-oss-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-platform-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-account-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+        <!-- 店铺api模块-->
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-shops-api</artifactId>
+            <version>${gruul.version}</version>
+        </dependency>
+
+        <!--数据库-->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+        <!--module service -->
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-common-module-service</artifactId>
+        </dependency>
+        <!--module global -->
+        <dependency>
+            <groupId>com.medusa</groupId>
+            <artifactId>gruul-common-global-model</artifactId>
+        </dependency>
+        <!--RocketMQ-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <!--test-->
+        <!--h2 单元测试-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

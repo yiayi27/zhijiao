@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MemberInfoMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MemberInfo">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="member_number" property="memberNumber"/>
+        <result column="member_qrcode" property="memberQrcode"/>
+        <result column="state" property="state"/>
+        <result column="member_card_info_id" property="memberCardInfoId"/>
+        <result column="member_register_time" property="memberRegisterTime"/>
+        <result column="member_expire_time" property="memberExpireTime"/>
+        <result column="member_register_type" property="memberRegisterType"/>
+        <result column="user_id" property="userId"/>
+        <result column="register_data" property="registerData"/>
+    </resultMap>
+
+    <resultMap id="MemberListResultMap" type="com.medusa.gruul.account.model.dto.MemberListDto">
+        <result column="member_number" property="memberNumber"/>
+        <result column="supply_bonus" property="supplyBonus"/>
+        <result column="rebate_bonus" property="rebateBonus"/>
+        <result column="user_id" property="userId"/>
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="phone" property="phone"/>
+        <result column="member_register_time" property="memberRegisterTime"/>
+        <result column="member_expire_time" property="memberExpireTime"/>
+        <result column="last_deal_time" property="orderLastDealTime"/>
+        <result column="first_login_time" property="firstLoginTime"/>
+        <result column="consume_num" property="consumeNum"/>
+        <result column="consume_totle_money" property="consumeTotleMoney"/>
+        <result column="integral" property="integral"/>
+        <result column="rank_code" property="rankCode"/>
+        <result column="rank_name" property="rankName"/>
+        <result column="shop_user_id" property="shopUserId"/>
+        <result column="open_type" property="openType"/>
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        is_deleted,
+        update_time,
+        member_number, member_qrcode, state, member_card_info_id, member_register_time, member_expire_time, member_register_type, user_id, register_data
+    </sql>
+
+    <select id="selectByMemberList" resultMap="MemberListResultMap">
+        SELECT
+            extends.supply_bonus AS supply_bonus,
+            extends.rebate_bonus AS rebate_bonus,
+            extends.user_id AS user_id,
+            extends.user_id AS shop_user_id,
+            extends.nickname AS nike_name,
+            extends.avatar AS avatar_url,
+            extends.first_login_time AS first_login_time,
+            extends.last_deal_time AS last_deal_time,
+            extends.consume_num AS consume_num,
+            extends.consume_totle_money AS consume_totle_money,
+            extends.integral AS integral
+        FROM
+            t_mini_account_extends AS extends
+        WHERE
+            extends.shop_id =  #{paramMap.shopId}
+        AND EXISTS (
+            SELECT
+                memberInfo.id
+            FROM t_member_info AS memberInfo
+            LEFT JOIN t_member_card_info as card ON card.id = memberInfo.member_card_info_id
+            WHERE
+                memberInfo.user_id = extends.user_id
+            AND memberInfo.is_deleted = 0
+            AND memberInfo.state = 1
+            AND memberInfo.member_expire_time > SYSDATE()
+            <if test="paramMap.becomeMemberStartTime != null">
+                AND memberInfo.member_register_time >= #{paramMap.becomeMemberStartTime}
+            </if>
+            <if test="paramMap.becomeMemberEndTime != null">
+                AND <![CDATA[ memberInfo.member_register_time <= #{paramMap.becomeMemberEndTime} ]]>
+            </if>
+            <if test="paramMap.memberNumber != null">
+                AND memberInfo.member_number = #{paramMap.memberNumber}
+            </if>
+            <if test="paramMap.memberCardId != null">
+                AND memberInfo.member_info_id = #{paramMap.memberCardId}
+            </if>
+            <if test="paramMap.rankCode != null">
+                AND card.rank_code = #{paramMap.rankCode}
+            </if>
+        )
+        AND extends.is_deleted = 0
+        <if test="paramMap.tagId != null">
+            AND EXISTS ( SELECT tagGroup.id FROM t_mini_account_tag_group AS tagGroup WHERE tagGroup.user_id = extends.user_id AND tagGroup.tag_id = #{paramMap.tagId} AND tagGroup.is_deleted=0  )
+        </if>
+        <if test="paramMap.nikeName != null">
+            AND LOCATE( #{paramMap.nikeName}, extends.nickname )
+        </if>
+        <if test="paramMap.orderSuccessStartTime != null">
+            AND extends.last_deal_time >= #{paramMap.orderSuccessStartTime}
+        </if>
+        <if test="paramMap.orderSuccessEndTime != null">
+        AND <![CDATA[ extends.last_deal_time <= #{paramMap.orderSuccessEndTime} ]]>
+        </if>
+        <if test = "paramMap.sortType == null" >
+            ORDER BY user_id DESC
+        </if>
+        <if test = "paramMap.sortType == 1" >
+            ORDER BY consume_totle_money DESC
+        </if>
+        <if test = "paramMap.sortType == 2" >
+            ORDER BY consume_totle_money ASC
+        </if >
+    </select>
+
+
+    <update id="updateMemberExpireTime">
+        update t_member_info t
+        set t.member_expire_time = #{updateMemberExpireTimeDto.memberExpireTime}
+        where t.member_number = #{updateMemberExpireTimeDto.memberNumber}
+    </update>
+
+    <update id="updateApiMemberExpireTime">
+        update t_member_info t
+        set t.member_expire_time = #{updateApiMemberExpireTimeDto.memberExpireTime}
+        where t.member_number = #{updateApiMemberExpireTimeDto.memberNumber}
+    </update>
+
+    <update id="upgradeMemberRank">
+        update t_member_info
+        set member_card_info_id = (SELECT id
+                                   FROM t_member_card_info
+                                   where shop_id = #{upgradeMemberRankDto.shopId}
+                                     and rank_code = #{upgradeMemberRankDto.rankCode}
+                                     and is_deleted = 0
+                                     and open_type = (
+                                           SELECT current_open_type
+                                           FROM t_member_card_base_info
+                                           where shop_id = #{upgradeMemberRankDto.shopId}
+                                           )
+                )
+        where member_number = #{upgradeMemberRankDto.memberNumber}
+    </update>
+
+
+    <select id="getMemberInfoByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_info t
+        where t.is_deleted = 0 and
+        t.state = 1 and t.member_expire_time > sysdate()
+        <if test="shopUserId != null and shopUserId != ''">
+            AND t.user_id = #{shopUserId}
+        </if>
+        order by t.member_register_time asc
+    </select>
+
+    <update id="updateRegisterData">
+        update t_member_info t
+        set t.register_data = #{memberInfo.registerData}
+        where t.is_deleted = 0
+          AND t.state = 1
+          AND t.user_id = #{memberInfo.userId}
+    </update>
+
+    <update id="upgradeApiMemberRank">
+        update t_member_info
+        set member_card_info_id = (SELECT id
+                                   FROM t_member_card_info
+                                   where shop_id = #{upgradeApiMemberRankDto.shopId}
+                                     and rank_code = #{upgradeApiMemberRankDto.rankCode}
+                                     and is_deleted = 0
+                                     and open_type = (
+                                       SELECT current_open_type
+                                       FROM t_member_card_base_info
+                                       where shop_id = #{upgradeApiMemberRankDto.shopId}
+                                   )
+                )
+        where member_number = #{upgradeApiMemberRankDto.memberNumber}
+    </update>
+
+    <select id="getCountByRankCode" resultType="java.lang.Integer">
+        select count(t.id) from t_member_info t
+        left join t_member_card_info tm on tm.id = t.member_card_info_id
+        where t.is_deleted = 0
+        <if test="shopId != null and shopId != ''">
+            AND t.shop_id = #{shopId}
+        </if>
+        <if test="rankCode != null and rankCode != ''">
+            AND tm.rank_code = #{rankCode}
+        </if>
+    </select>
+
+    <resultMap id="MemberInnerListResultMap" type="com.medusa.gruul.account.model.vo.MemberInnerListVo">
+        <result column="id" property="id"/>
+        <result column="member_number" property="memberNumber"/>
+        <result column="member_register_time" property="memberRegisterTime"/>
+        <result column="member_expire_time" property="memberExpireTime"/>
+        <result column="become_member_day_number" property="becomeMemberDayNumber"/>
+        <result column="rank_code" property="rankCode"/>
+        <result column="rank_name" property="rankName"/>
+        <result column="open_type" property="openType"/>
+        <result column="title" property="title"/>
+        <result column="open_value" property="openValue"/>
+    </resultMap>
+
+    <select id="getMemberRecord" resultMap="MemberInnerListResultMap">
+        select
+        tmi.id,tmi.member_number,tmi.member_register_time,tmi.member_expire_time,
+        tmc.rank_code,tmc.rank_name,tmc.open_type,tmc.title,tmc.open_value
+        from
+        t_member_info as tmi
+        left join t_member_card_info as tmc on tmc.id = tmi.member_card_info_id
+        <where>
+            1=1
+            <if test="paramMap.rankName != null">
+                and tmc.rank_name like #{paramMap.rankName}
+            </if>
+            <if test="paramMap.title != null">
+                and tmc.title like #{paramMap.title}
+            </if>
+            <if test="paramMap.shopUserId != null">
+                and tmi.user_id = #{paramMap.shopUserId}
+            </if>
+            <if test="paramMap.memberNumber != null">
+                and tmi.member_number like #{paramMap.memberNumber}
+            </if>
+            <if test="paramMap.becomeMemberStartTime != null">
+                and tmi.member_register_time >= #{paramMap.becomeMemberStartTime}
+            </if>
+            <if test="paramMap.becomeMemberEndTime != null">
+                and <![CDATA[ tmi.member_register_time <= #{paramMap.becomeMemberEndTime}]]>
+            </if>
+        </where>
+    </select>
+</mapper>

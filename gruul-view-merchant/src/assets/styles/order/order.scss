@@ -1,0 +1,198 @@
+@import '../my-mixins/utils.scss';
+
+.order {
+  .is-active {
+    .el-dropdown-selfdefine {
+      color: #409eff;
+    }
+  }
+
+  &__quickly {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .name {
+      display: inline-block;
+      margin-right: -15px;
+    }
+  }
+
+  :deep(.order--header) {
+    width: 100%;
+    position: relative;
+  }
+
+  :deep(.iconPC-beizhu) {
+    font-size: 24px;
+    position: absolute;
+    margin-left: -15px;
+    margin-top: -5px;
+    right: 0;
+    cursor: pointer;
+
+    &.red {
+      color: red;
+    }
+  }
+
+  .el-dropdown-selfdefine {
+    padding-left: 10px;
+  }
+
+  &__control {
+    &--top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-top: 10px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    &--bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      width: 300px;
+      margin-top: 15px;
+      // position: absolute;
+    }
+  }
+
+  .el-pagination {
+    text-align: right;
+    margin-right: -20px;
+  }
+
+  :deep(.el-pagination__sizes) {
+    margin-right: -7px;
+  }
+
+  :deep(.btn-container) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  :deep(.text--center) {
+    text-align: center;
+  }
+}
+
+:deep(.m__table) {
+  .table__goods {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .table__goods--image {
+      $s: 64px;
+      width: $s;
+      height: $s;
+      background: #ccc;
+      margin-right: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      flex: 0 0 $s;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .table__goods--info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 184px;
+      height: auto;
+      line-height: 16px;
+
+      .goods--name {
+        color: #586884;
+      }
+
+      .goods--specs {
+        color: #586884;
+      }
+
+      .goods--specification {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .l {
+          color: #999999;
+        }
+      }
+
+      .goods--price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #586884;
+        margin-top: 5px;
+      }
+
+      .specs {
+        color: #586884;
+        margin-right: 28px;
+      }
+    }
+  }
+
+  .table__user {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding-left: 15px;
+
+    .user--head {
+      $s: 35px;
+      width: $s;
+      height: $s;
+      border-radius: 50%;
+      background: blue;
+      margin-right: 10px;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .user--name {
+      word-break: break-all;
+
+      span {
+        color: #2e99f3;
+      }
+    }
+  }
+
+  .table__button {
+    cursor: pointer;
+
+    &.button--warning {
+      color: #fa8b03;
+    }
+  }
+}
+
+.iconPC-beizhu {
+  font-size: 24px;
+  position: absolute;
+  margin-left: -15px;
+  margin-top: -5px;
+  right: 0;
+  cursor: pointer;
+
+  &.red {
+    color: red;
+  }
+}

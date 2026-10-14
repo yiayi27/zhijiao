@@ -1,0 +1,34 @@
+/*溢出（overflow）*/
+
+.of-auto {
+  overflow: auto;
+}
+
+.of-hidden {
+  overflow: hidden;
+}
+
+.of-inherit {
+  overflow: inherit;
+}
+
+.of-scroll {
+  overflow: scroll;
+}
+
+.of-scroll-y {
+  // overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.of-visible {
+  overflow: visible;
+}
+
+.scroll-nobar {
+  overflow: hidden;
+  margin-right: -17px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

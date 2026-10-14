@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MemberOrderInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MemberOrderInfo">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="member_card_id" property="memberCardId"/>
+        <result column="pay_amount" property="payAmount"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="usable_amount" property="usableAmount"/>
+    </resultMap>
+
+    <resultMap id="MemberOrderResultMap" type="com.medusa.gruul.account.model.vo.MemberOrderInfoResVo">
+        <result column="id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="nike_name" property="nikeName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="rank_code" property="rankCode"/>
+        <result column="rank_name" property="rankName"/>
+        <result column="pay_amount" property="payAmount"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="usable_amount" property="usableAmount"/>
+        <result column="note" property="note"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        is_deleted,
+        update_time,
+        order_id, user_id, member_card_id, pay_amount, pay_time, usable_amount
+    </sql>
+
+    <select id="selectMemberOrderList" resultMap="MemberOrderResultMap">
+        SELECT
+            orders.id AS id,
+            orders.order_id AS order_id,
+            orders.user_id AS user_id,
+            extends.nickname AS nike_name,
+            extends.avatar AS avatar_url,
+            card.rank_name AS rank_name,
+            card.rank_code AS rank_code,
+            orders.pay_amount AS pay_amount,
+            orders.pay_time AS pay_time,
+            orders.usable_amount AS usable_amount,
+            orders.note AS note,
+            orders.state AS state
+        FROM
+            t_member_order_info AS orders
+        INNER JOIN  t_mini_account_extends AS extends ON orders.user_id = extends.user_id AND extends.is_deleted = 0
+        LEFT JOIN t_member_card_info AS card ON orders.member_card_id = card.id AND card.is_deleted = 0
+        WHERE
+            orders.is_deleted = 0
+        <if test="paramMap.searchContent != null">
+            and (extends.nickname like #{paramMap.searchContent} or orders.order_id like #{paramMap.searchContent})
+        </if>
+        <if test="paramMap.startTime != null">
+            and orders.pay_time >= #{paramMap.startTime}
+        </if>
+        <if test="paramMap.endTime != null">
+            and  <![CDATA[ orders.pay_time <= #{paramMap.endTime}]]>
+        </if>
+        ORDER BY orders.pay_time DESC
+    </select>
+
+
+</mapper>

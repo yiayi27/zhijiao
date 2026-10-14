@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.discount.mapper.api.ApiFullScaleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.discount.api.model.vo.api.ApiFullScaleVo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="deduction_type" property="deductionType" />
+        <result column="apply_type" property="applyType" />
+        <result column="status" property="status" />
+        <collection property="fullScaleRules" ofType="com.medusa.gruul.discount.api.model.vo.api.ApiFullScaleRuleVo" column="id"
+                    select="queryFullScaleRule" />
+    </resultMap>
+
+    <resultMap id="FullScaleRuleResultMap" type="com.medusa.gruul.discount.api.model.vo.api.ApiFullScaleRuleVo">
+        <id column="r_id" property="id"/>
+        <id column="r_full_scale_id" property="fullScaleId"/>
+        <result column="r_rule_type" property="ruleType"/>
+        <result column="r_discount" property="discount"/>
+        <result column="r_discount_amount" property="discountAmount"/>
+        <result column="r_condition_amount" property="conditionAmount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Page_List">
+        id, name, deduction_type, apply_type, status
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, start_time, end_time, deduction_type, apply_type, status
+    </sql>
+
+    <sql id="Base_Full_Scale_Rule_List">
+        r.id AS r_id, r.full_scale_id as r_full_scale_id, r.rule_type as r_rule_type, r.discount as r_discount, r.discount_amount as r_discount_amount, r.condition_amount as r_condition_amount
+    </sql>
+
+    <select id="queryApiFullScaleList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Page_List" />
+        FROM
+        t_full_scale p
+        <where>
+            p.is_deleted = 0
+            and p.status = 1
+        </where>
+        ORDER BY
+        p.create_time desc
+    </select>
+
+    <select id="queryFullScaleRule" resultMap="FullScaleRuleResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Full_Scale_Rule_List"/>
+        FROM
+        t_full_scale_rule r
+        WHERE
+        r.is_deleted = 0
+        AND
+        r.full_scale_id = #{id}
+    </select>
+
+
+</mapper>

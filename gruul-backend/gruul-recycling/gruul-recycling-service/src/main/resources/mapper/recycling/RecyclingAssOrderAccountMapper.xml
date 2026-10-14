@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.recycling.mapper.RecyclingAssOrderAccountMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.recycling.api.entity.RecyclingAssOrderAccount">
+        <id column="id" property="id"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="shop_user_id" property="shopUserId"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="order_number" property="orderNumber"/>
+        <result column="last_pay_time" property="lastPayTime"/>
+        <result column="total_fund_quota" property="totalFundQuota"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="avatar_url" property="avatarUrl"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        id, shop_id, shop_user_id, total_amount, order_number, last_pay_time, total_fund_quota, nick_name,
+        avatar_url
+    </sql>
+
+    <select id="selectStatistical"
+            resultType="com.medusa.gruul.recycling.model.dto.SelectStatisticalDto">
+        SELECT SUM(total_fund_quota) as totalFundQuota,
+        SUM(order_number) as totalOrderNumber
+        FROM `t_recycling_ass_order_account`
+        <where>
+            <if test="shopUserId != ''">
+                shop_user_id = #{shopUserId}
+            </if>
+
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <select id="selectByAccountRanking" resultType="HashMap">
+        SELECT shop_user_id,
+               rownum
+        FROM (
+                     SELECT traoa.shop_user_id,
+                            traoa.total_fund_quota,
+                         <![CDATA[   (@rownum := @rownum + 1) AS rownum ]]>
+                     FROM t_recycling_ass_order_account AS traoa,
+                        <![CDATA[    (SELECT @rownum := 0) t ]]>
+                         where is_deleted = 0
+                       AND shop_id = #{shopId}
+                     ORDER BY traoa.total_fund_quota DESC
+                     ) tt
+    </select>
+</mapper>

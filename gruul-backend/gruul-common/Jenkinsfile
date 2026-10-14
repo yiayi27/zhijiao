@@ -1,0 +1,48 @@
+ pipeline {
+
+    agent none
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '2'))
+        skipDefaultCheckout true
+    }
+
+    environment {
+       PROJECT_VERSION = "1.0" // 项目版本，从maven中获得
+    }
+
+    stages {
+        stage('check out') {
+
+            agent { label 'master'}
+           
+            steps {
+
+               checkout scm
+
+               echo "current branch: $BRANCH_NAME"
+
+               script {
+                    PROJECT_VERSION = readMavenPom().getVersion()
+               }
+
+               echo "$PROJECT_VERSION"
+
+            }
+
+        }
+
+
+        stage('mvn build & deploy'){
+
+            agent { label 'master'}
+
+            steps {
+
+               withMaven(maven: 'maven3.6.2', mavenSettingsConfig: 'mavenSettingsConfig') {
+                 sh "mvn clean package -U -Dmaven.test.skip=true deploy"
+               }
+            }
+        }
+    }
+}

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.IntegralDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.IntegralDetail">
+        <id column="integral_detail_id" property="integralDetailId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="prize_order_id" property="prizeOrderId"/>
+        <result column="gain_integral_type" property="gainIntegralType"/>
+        <result column="quantity" property="quantity"/>
+        <result column="integral" property="integral"/>
+        <result column="now_the_integral" property="nowTheIntegral"/>
+        <result column="detail_name" property="detailName"/>
+        <result column="is_clear" property="clear"/>
+        <result column="shop_id" property="shopId"/>
+    </resultMap>
+
+    <!--用户积分明细查询 映射结果-->
+    <resultMap id="DetailBaseResultMap" type="com.medusa.gruul.integral.web.model.vo.IntegralDetailVo">
+        <id column="integral_detail_id" property="integralDetailId"/>
+        <result column="user_id" property="userId"/>
+        <result column="gain_integral_type" property="gainIntegralType"/>
+        <result column="integral" property="integral"/>
+        <result column="detail_name" property="detailName"/>
+        <result column="now_the_integral" property="nowTheIntegral"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!--用户积分查询通用列-->
+    <sql id="Detail_Base_Column_List">
+        integral_detail_id,
+        user_id,
+        gain_integral_type,
+        integral,
+        detail_name,
+        now_the_integral,
+        create_time
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        create_time,
+        update_time,
+        integral_detail_id, user_id, prize_order_id, gain_integral_type, quantity, integral, now_the_integral, detail_name, is_clear
+    </sql>
+
+    <update id="updateAllStatus">
+        UPDATE
+            t_integral_detail
+        SET
+            is_clear = 1
+        WHERE
+            shop_id = #{shopId}
+            AND
+            is_clear = 0
+
+
+    </update>
+
+
+    <select id="getIntegralDetail" resultMap="DetailBaseResultMap"
+            parameterType="com.medusa.gruul.integral.web.model.vo.IntegralDetailVo">
+        SELECT
+        <include refid="Detail_Base_Column_List"/>
+        FROM
+        t_integral_detail
+        WHERE
+        is_deleted = 0
+        AND
+        user_id = #{integralDetailParam.userId}
+        ORDER BY
+        create_time
+        DESC,
+        integral_detail_id
+        DESC
+    </select>
+
+    <!---->
+    <select id="selectDetailInfo" resultMap="BaseResultMap"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralDetail">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        t_integral_detail
+        WHERE
+        shop_id = #{shopId}
+        AND
+        user_id = #{userId}
+        AND
+        gain_integral_type = 5
+        AND
+        is_deleted = 0
+        AND
+        to_days(create_time) = to_days(now());
+    </select>
+
+
+    <select id="selectNowIntegral" resultType="java.math.BigDecimal">
+        SELECT SUM(integral)
+        FROM
+            t_integral_detail
+        WHERE
+            shop_id = #{shopId}
+            AND
+            user_id = #{userId}
+            AND
+            is_deleted = 0
+            AND
+            is_clear = 0
+    </select>
+
+
+    <select id="selectNeedClearIntegrals" resultMap="BaseResultMapInfo"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralDetail">
+        SELECT
+            SUM(integral) AS integral,
+            user_id
+        FROM
+            t_integral_detail
+        WHERE
+            shop_id = #{shopId}
+            AND
+            is_clear = 0
+            AND
+            integral &gt; 0
+            AND
+            create_time &lt; #{createTime}
+        GROUP BY user_id
+    </select>
+
+
+    <select id="getAllUser" resultMap="BaseResultMapInfo"
+            resultType="com.medusa.gruul.integral.api.entity.IntegralDetail">
+        SELECT
+            SUM(integral) AS integral,
+            user_id
+        FROM
+            t_integral_detail
+        WHERE
+            shop_id = #{shopId}
+            AND
+            is_clear = 0
+        GROUP BY user_id
+    </select>
+
+
+    <select id="selectIntegralDetail" resultMap="DetailBaseResultMap"
+            resultType="com.medusa.gruul.integral.web.model.vo.IntegralDetailVo">
+        SELECT
+        <include refid="Detail_Base_Column_List"/>
+        FROM
+        t_integral_detail
+        WHERE
+        is_deleted = 0
+        AND
+        user_id = #{integralDetailDto.userId}
+        <if test="integralDetailDto.startTime != null and integralDetailDto.startTime != '' and integralDetailDto.endTime != null and integralDetailDto.endTime != ''">
+            AND create_time BETWEEN concat(#{integralDetailDto.startTime},' 00:00:00') AND
+            concat(#{integralDetailDto.endTime},' 23:59:59')
+        </if>
+        ORDER BY
+        create_time
+        DESC
+
+    </select>
+
+
+    <resultMap id="BaseResultMapInfo" type="java.util.Map">
+        <result column="integral" property="integral"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MemberCardPrivilegeGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MemberCardPrivilegeGroup">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="privilege_id" property="privilegeId"/>
+        <result column="member_card_id" property="memberCardId"/>
+        <result column="value" property="value"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        shop_id,
+        is_deleted,
+        update_time,
+        privilege_id, member_card_id, `value`
+    </sql>
+
+    <select id="selectMemberCardPrivilegeGroup" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_privilege_group t
+        where
+        t.is_deleted = 0
+        <if test="shopId != null and shopId != ''">
+            AND t.shop_id = #{shopId}
+        </if>
+        <if test="memberCardId != null and memberCardId != ''">
+            AND t.member_card_id = #{memberCardId}
+        </if>
+        <if test="privilegeId != null and privilegeId != ''">
+            AND t.privilege_id = #{privilegeId}
+        </if>
+    </select>
+
+
+    <select id="getByMemberCardId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_privilege_group t
+        where
+        t.is_deleted = 0
+        <if test="memberCardId != null">
+            AND t.member_card_id = #{memberCardId}
+        </if>
+    </select>
+
+
+</mapper>

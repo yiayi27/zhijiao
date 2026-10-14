@@ -1,0 +1,30 @@
+//搜索
+
+.search {
+  margin: 0 20px;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 22px;
+  vertical-align: middle;
+  transition: all 0.3s;
+
+  &__iconfont {
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  &.is-style-one {
+    background-color: #eeeeee;
+    border: 1px solid transparent;
+    border-radius: 44px;
+  }
+  &.is-style-two {
+    background-color: #eeeeee;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  &.is-style-three {
+    border: 1px solid #eeeeee;
+    border-radius: 44px;
+  }
+}

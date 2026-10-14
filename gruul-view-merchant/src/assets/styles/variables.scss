@@ -1,0 +1,18 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $button-border-radius: (
+    'large': 15px,
+    'default': 15px,
+    'small': 15px,
+  ),
+  $tag: (
+    'border-radius': 15px,
+  ),
+  $table: (
+    'header-bg-color': #f8f8f8,
+  )
+);
+
+:root {
+  --el-border-radius-base: 8px !important;
+  --el-pagination-border-radius: 8px !important;
+}

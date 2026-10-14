@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.integral.mapper.StepNumberMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.integral.api.entity.StepNumber">
+        <id column="step_number_id" property="stepNumberId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="integral_rule_id" property="integralRuleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_url" property="userUrl"/>
+        <result column="user_wxname" property="userWxname"/>
+        <result column="today_step" property="todayStep"/>
+        <result column="target_step" property="targetStep"/>
+        <result column="has_change" property="hasChange"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        shop_id,
+        is_deleted,
+        create_time,
+        update_time,
+        step_number_id, integral_rule_id, user_id, user_url, user_wxname, today_step, target_step ,has_change
+    </sql>
+    <update id="updateStepNumber" parameterType="com.medusa.gruul.integral.api.entity.StepNumber">
+        UPDATE
+        step_number sn
+        SET
+        sn.has_change = #{sn.hasChange}
+        <where>
+            sn.step_number_id = #{sn.stepNumberId}
+        </where>
+    </update>
+
+
+    <select id="seleteByUserId" resultType="com.medusa.gruul.integral.api.entity.StepNumber">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        step_number
+        WHERE
+        user_id = #{userId}
+        AND
+        is_deleted = 0
+        LIMIT 1
+    </select>
+
+
+    <select id="selectByHasChange" resultType="com.medusa.gruul.integral.api.entity.StepNumber">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        step_number
+        WHERE
+        has_change > 0
+        AND
+        is_deleted = 0
+    </select>
+
+
+</mapper>

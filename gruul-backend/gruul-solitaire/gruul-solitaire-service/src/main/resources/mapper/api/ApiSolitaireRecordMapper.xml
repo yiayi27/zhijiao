@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.solitaire.mapper.api.ApiSolitaireRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseActivityResultMap" type="com.medusa.gruul.solitaire.api.model.vo.api.ApiSolitaireRecordVo">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="order_id" property="orderId" />
+        <result column="buyer_id" property="buyerId" />
+        <result column="buyer_name" property="buyerName" />
+        <result column="buyer_icon" property="buyerIcon" />
+        <result column="product_name" property="productName" />
+        <result column="product_quantity" property="productQuantity" />
+        <result column="pay_amount" property="payAmount" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, create_time, order_id, buyer_id, buyer_name, buyer_icon, product_name, product_quantity, pay_amount
+    </sql>
+
+    <select id="getSolitaireRecord" resultMap="BaseActivityResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_solitaire_record p
+        <where>
+            p.activity_id = #{activityId}
+            and p.is_deleted = 0
+        </where>
+        ORDER BY
+        p.create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+@import '@/assets/styles/mixins/mixins.scss';
+
+@include b(balance) {
+  @include flex();
+  flex-direction: column;
+  @include e(photo) {
+    width: 271rpx;
+    height: 271rpx;
+    margin: 116rpx 0;
+  }
+  @include e(word) {
+    font-size: 30rpx;
+    color: #404040;
+    margin-bottom: 36rpx;
+  }
+  @include e(num) {
+    font-size: 83rpx;
+    @include m(symbol) {
+      font-size: 50rpx;
+    }
+  }
+  @include e(detail) {
+    color: #3d64c0;
+    font-size: 24rpx;
+    margin-bottom: 132rpx;
+    margin-top: 36rpx;
+  }
+  @include e(button) {
+    width: 440rpx;
+    height: 82rpx;
+    border-radius: 10rpx;
+
+    font-size: 26rpx;
+    font-family: Adobe Fan Heiti Std;
+    font-weight: normal;
+    color: #cfa961;
+    text-align: center;
+    line-height: 82rpx;
+    @include m(recharge) {
+      background: linear-gradient(90deg, #eaca87, #b58a3d);
+      color: #ffffff;
+      margin-bottom: 45rpx;
+    }
+    @include m(withdrawal) {
+      border: 1px solid #cccccc;
+    }
+  }
+}

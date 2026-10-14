@@ -1,0 +1,32 @@
+//  微信
+<script
+type="text/javascript"
+>
+location.href="https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?
+prepay_id=wx25151229573702639e3398ab6990eb0000&package=108913079&
+redirect_url=https%3A%2F%2Ftest.bgniao.cn%2Fapi%2Fpayment%2Fmulti%2Fpay%2Freturn%2F100002%2FWECHAT%3Fout_trade_no%3D1485873188134064128"
+</script>
+
+// 支付宝
+<form
+    id="_alipaysubmit_"
+    name="alipaysubmit"
+    action="https://openapi.alipay.com/gateway.do?
+    app_id=2021003111653679&
+    charset=UTF-8&
+    format=json&
+    method=alipay.trade.wap.pay&
+    notify_url=https%3A%2F%2Ftest.bgniao.cn%2Fapi%2Fpayment%2Fmulti%2Fpay%2Fnotify%2F100002%2F10&
+    return_url=https%3A%2F%2Ftest.bgniao.cn%2Fapi%2Fpayment%2Fmulti%2Fpay%2Freturn%2F100002%2FALIPAY&
+    sign=gEcWf8XBeBBRsN518JyxjeUY0uPbnoXj2vcq6tykTJtplJjk5GexsijoffnFAbCwQvg5RrhM%2BtYERwhx4UaO6C3EdicjQ8mwBAqZuMScqV3vh4xOaTvWNPBzu%2BOM9mexA2hDznofQFYwi4l6T4gLNX01goaWwuJMB%2BGnMZBI57oxiKz4tqm%2FAEkQMDTMZf%2FSE1f3LG2SkqJuhnaEotgbk2u1E0D%2FG02ishyoBJtuTXfosQ9ljaWrj4wpdNQjqSvmkZquHz35khKaN1XxAg6ejTgnNUONQn5TDgyAS66mg8LZX%2Bsjq8c9Zjj1Kwt1tSQQJ0SCm8bpf5%2FxVsoALVMbIw%3D%3D&
+    sign_type=RSA2&
+    timestamp=2022-01-25+15%3A15%3A13&
+    version=1.0
+    method=\"post\"
+    >
+    <input
+    type="hidden"
+    name="biz_content"
+    value='{"body":"共计1个商品","out_trade_no":\"1485873876700368896\",\"passback_params\":\"{\\\"number\\\":1,\\\"orderId\\\":\\\"1485873869677047810\\\",\\\"price\\\":123.00,\\\"totalRebate\\\":0.00}\",\"product_code\":\"QUICK_WAP_PAY\",\"subject\":\"MALL-商城购物\",\"time_expire\":\"2022-01-25 21:15:33\",\"timeout_express\":\"360m\",\"total_amount\":\"123.00\"}'/></form>
+<script>document.forms['_alipaysubmit_'].submit();
+</script>

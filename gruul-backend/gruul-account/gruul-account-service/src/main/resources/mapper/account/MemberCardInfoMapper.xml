@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medusa.gruul.account.mapper.MemberCardInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medusa.gruul.account.api.entity.MemberCardInfo">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="rank_code" property="rankCode"/>
+        <result column="rank_name" property="rankName"/>
+        <result column="back_ground_pic_url" property="backGroundPicUrl"/>
+        <result column="title" property="title"/>
+        <result column="open_value" property="openValue"/>
+        <result column="introduce" property="introduce"/>
+        <result column="open_type" property="openType"/>
+        <result column="use_in_date" property="useInDate"/>
+        <result column="consume_condition" property="consumeCondition"/>
+        <result column="is_buy_goods" property="buyGoods"/>
+        <result column="is_open" property="isOpen"/>
+        <result column="style" property="style"/>
+        <result column="shop_id" property="shopId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        t.id,
+        t.create_time,
+        t.is_deleted,
+        t.update_time,
+        t.rank_code, t.rank_name, t.back_ground_pic_url, t.title, t.open_value, t.introduce, t.open_type, t.use_in_date, t.consume_condition, t.is_buy_goods, t.is_open, t.style
+    </sql>
+
+    <select id="selectMemCardInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_info t
+        where
+        t.is_deleted = 0
+        <if test="setMemberDto.shopId != null and setMemberDto.shopId != ''">
+            AND t.shop_id = #{setMemberDto.shopId}
+        </if>
+        <if test="setMemberDto.rankCode != null and setMemberDto.rankCode != ''">
+            AND t.rank_code = #{setMemberDto.rankCode}
+        </if>
+        <if test="currentOpenType != null and currentOpenType != ''">
+            AND t.open_type = #{currentOpenType}
+        </if>
+        ORDER BY
+        t.create_time
+        DESC
+    </select>
+
+    <resultMap id="MemberCardRank" type="com.medusa.gruul.account.model.vo.MemberCardRankVo">
+        <result column="rank_code" property="rankCode"/>
+        <result column="rank_name" property="rankName"/>
+    </resultMap>
+
+    <select id="getMemberCardRank" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_info t
+        where
+        t.is_deleted = 0
+        <if test="shopId != null and shopId != ''">
+            AND t.shop_id = #{shopId}
+        </if>
+    </select>
+
+
+    <select id="getMemberCardInfoByShopId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_info t
+        where
+        t.is_deleted = 0
+        <if test="shopId != null and shopId != ''">
+            AND t.shop_id = #{shopId}
+        </if>
+        ORDER BY
+        t.create_time
+        DESC
+    </select>
+
+    <update id="updateMemberCardInfoStatus">
+        update t_member_card_info t set t.is_open =
+        #{memberCardInfoRankStatusVo.memberCardInfoSwitch},t.update_time=#{memberCardInfoRankStatusVo.updateTime}
+        where
+        t.is_deleted = 0
+        <if test="memberCardInfoRankStatusVo.shopId != null and memberCardInfoRankStatusVo.shopId != ''">
+            AND t.shop_id = #{memberCardInfoRankStatusVo.shopId}
+        </if>
+        <if test="memberCardInfoRankStatusVo.rankCode != null and memberCardInfoRankStatusVo.rankCode != ''">
+            AND t.rank_code = #{memberCardInfoRankStatusVo.rankCode}
+        </if>
+    </update>
+
+
+    <select id="getMemberCardInfoList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_info t
+        where
+        t.is_deleted = 0 and t.is_open = 1
+        <if test="memberCardInfoListDto.shopId != null and memberCardInfoListDto.shopId != ''">
+            AND t.shop_id = #{memberCardInfoListDto.shopId}
+        </if>
+        <if test="memberCardInfoListDto.openType != null and memberCardInfoListDto.openType != ''">
+            AND t.open_type = #{memberCardInfoListDto.openType}
+        </if>
+        order by t.rank_code asc
+    </select>
+
+    <select id="getApiMemberCardInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_member_card_info t
+        where t.id = #{id}
+    </select>
+
+</mapper>
